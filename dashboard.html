@@ -1,0 +1,492 @@
+<style>
+    .admin-dashboard {
+      overflow: hidden;
+    }
+    
+    .layout-container {
+      gap: 20px;
+      display: flex;
+    }
+    
+    .sidebar-column {
+      display: flex;
+      flex-direction: column;
+      line-height: normal;
+      width: 23%;
+    }
+    
+    .sidebar-nav {
+      box-shadow: 0 14px 34px rgba(34, 37, 169, 0.4);
+      display: flex;
+      flex-grow: 1;
+      flex-direction: column;
+      font-family: Roboto, sans-serif;
+      padding: 20px 0 49px;
+    }
+    
+    .logo {
+      aspect-ratio: 0.99;
+      object-fit: contain;
+      width: 150px;
+      margin: 0 auto;
+    }
+    
+    .system-title {
+      color: #098100;
+      font: 700 16px/20px Roboto, sans-serif;
+      text-align: center;
+      text-transform: uppercase;
+      margin: 18px auto 0;
+    }
+    
+    .nav-menu {
+      display: flex;
+      margin-top: 67px;
+      min-height: 295px;
+      flex-direction: column;
+      font-size: 16px;
+      color: #343434;
+      padding: 33px 32px;
+    }
+    
+    .nav-item {
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 15px;
+      margin-top: 8px;
+    }
+    
+    .nav-item.active {
+      background-color: #098100;
+      color: #fff;
+      font-weight: 700;
+    }
+    
+    .nav-icon {
+      aspect-ratio: 1;
+      object-fit: contain;
+      width: 24px;
+    }
+    
+    .user-section {
+      display: flex;
+      margin-top: 149px;
+      min-height: 243px;
+      flex-direction: column;
+      padding: 41px 32px;
+    }
+    
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 20px;
+      padding: 32px;
+    }
+    
+    .avatar {
+      background-color: #d9d9d9;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+    }
+    
+    .username {
+      width: 90px;
+    }
+    
+    .logout-btn {
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 16px;
+      color: #343434;
+      padding: 12px 15px;
+    }
+    
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      width: 77%;
+    }
+    
+    .page-header {
+      text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+      border-radius: 5px;
+      box-shadow: 0 6px 4px rgba(0, 0, 0, 0.25);
+      color: #fff;
+      background-color: #098100;
+      padding: 127px 31px 16px;
+      font: 600 60px/1.3 REM, sans-serif;
+    }
+    
+    .content-grid {
+      display: flex;
+      margin-top: 9px;
+      flex-wrap: wrap;
+    }
+    
+    .content-section {
+      border-radius: 6px;
+      box-shadow: 0 10px 4px rgba(0, 0, 0, 0.25);
+      padding: 16px;
+      border: 1px solid #fff;
+    }
+    
+    .welcome-container {
+      border-radius: 10px;
+      background-color: #25ae14;
+      padding: 22px 44px 22px 0;
+    }
+    
+    .welcome-text {
+      text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+      text-align: center;
+      font: 400 36px/1.3 REM, sans-serif;
+    }
+    
+    .welcome-icon {
+      aspect-ratio: 1;
+      object-fit: contain;
+      width: 202px;
+      margin: 17px auto 0;
+    }
+    
+    .events-section {
+      margin: auto 0;
+    }
+    
+    .events-title {
+      text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+      text-align: center;
+      font: 400 20px/1.3 REM, sans-serif;
+    }
+    
+    .events-list {
+      border-radius: 4px;
+      background: #fef7ff;
+      margin-top: 11px;
+    }
+    
+    .event-item {
+      min-height: 40px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .calendar-widget {
+      border-radius: 8px;
+      background-color: #fff;
+      box-shadow: 2px 20px 19px rgba(0, 0, 0, 0.09);
+      padding: 24px;
+      font: 600 14px/1 "Avenir Next LT Pro", sans-serif;
+      color: #4a5660;
+      text-align: center;
+    }
+    
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .calendar-nav {
+      aspect-ratio: 1;
+      width: 16px;
+    }
+    
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 30px);
+      gap: 8px;
+      margin-top: 22px;
+    }
+    
+    .calendar-day {
+      font-size: 10px;
+      color: #b5bec6;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+    
+    .calendar-date {
+      font-size: 16px;
+      height: 30px;
+      line-height: 30px;
+    }
+    
+    .calendar-date.active {
+      background-color: #14ae5c;
+      border-radius: 29px;
+      color: #fff;
+    }
+    
+    .attendance-section {
+      background-color: #f1f1f1;
+      border-radius: 6px;
+      box-shadow: 0 10px 4px rgba(0, 0, 0, 0.25);
+      margin-top: 12px;
+      padding: 25px 28px 0 0;
+      border: 1px solid #fff;
+    }
+    
+    .attendance-list {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .attendance-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 32px;
+      min-height: 65px;
+    }
+    
+    .status-columns {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 51px;
+    }
+    
+    .status-column {
+      height: 280px;
+      font-size: 25px;
+      font-weight: 600;
+      margin-top: 20px;
+      padding-top: 20px;
+    }
+    
+    .status-late {
+      background-color: #9bff2c;
+    }
+    
+    .status-absent {
+      background-color: #e3e3e3;
+    }
+    
+    .status-excused {
+      background-color: #9bff2c;
+    }
+    
+    @media (max-width: 991px) {
+      .layout-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+      }
+    
+      .sidebar-column {
+        width: 100%;
+      }
+    
+      .nav-menu {
+        margin-top: 40px;
+        padding: 0 20px;
+      }
+    
+      .user-section {
+        margin-top: 40px;
+        padding: 0 20px;
+      }
+    
+      .user-profile {
+        padding: 0 20px;
+      }
+    
+      .main-content {
+        width: 100%;
+      }
+    
+      .page-header {
+        font-size: 40px;
+        padding: 100px 20px 0;
+      }
+    
+      .welcome-container {
+        margin-top: 39px;
+      }
+    
+      .events-section {
+        margin-top: 40px;
+      }
+    
+      .calendar-widget {
+        margin-top: 39px;
+      }
+    
+      .attendance-section {
+        padding-right: 20px;
+      }
+    
+      .attendance-item {
+        padding: 0 20px;
+      }
+    
+      .status-columns {
+        margin-top: 40px;
+      }
+    }
+    </style>
+    
+    <!DOCTYPE html>
+
+<html>
+    <head>
+
+    </head>
+
+    <body>
+    <main class="admin-dashboard">
+      <div class="layout-container">
+        <aside class="sidebar-column">
+          <nav class="sidebar">
+            <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f657b31420000e6de9146ee2947165817e4623e7697b2613d7be9068686a10d1?placeholderIfAbsent=true&apiKey=7e7edec16a9e42139a2ca89b0045cf96" alt="System Logo" class="logo" />
+            <h1 class="system-title">Student Attendance Management System</h1>
+            
+            <div class="nav-menu">
+              <a href="#" class="nav-item active">
+                <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/e3dd824e25a3b5ba118bdb5dd696e247f49de8d076646d7b801dc97b7a2b3406?placeholderIfAbsent=true&apiKey=7e7edec16a9e42139a2ca89b0045cf96" alt="" class="nav-icon" />
+                <span>Home</span>
+              </a>
+              <a href="#" class="nav-item">
+                <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/a371d58e3eb1f1060e7009c71fe0445555ecb3ecfda71e56cc56491187347200?placeholderIfAbsent=true&apiKey=7e7edec16a9e42139a2ca89b0045cf96" alt="" class="nav-icon" />
+                <span>Class List</span>
+              </a>
+              <a href="#" class="nav-item">
+                <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9dabd219c0a242f9eb6a5a4e03c9b492758b643603b5f7143dcdfde4c58d701?placeholderIfAbsent=true&apiKey=7e7edec16a9e42139a2ca89b0045cf96" alt="" class="nav-icon" />
+                <span>Student Attendance Report</span>
+              </a>
+              <a href="#" class="nav-item">
+                <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/99439f46e557d0fb705db2d5aef3ed9c8ff7e63e3bb73d91ca29a6f2f8579c36?placeholderIfAbsent=true&apiKey=7e7edec16a9e42139a2ca89b0045cf96" alt="" class="nav-icon" />
+                <span>Student Attendance Login & NFC Enrollment</span>
+              </a>
+            </div>
+    
+            <div class="user-section">
+              <div class="user-profile">
+                <div class="avatar" role="img" aria-label="User avatar"></div>
+                <span class="username">Username</span>
+              </div>
+              <button class="logout-btn">
+                <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/3b6e1be5bf40f096cd68ec6cc693c11d6ac41df75e99d349f1254625b6bf8df1?placeholderIfAbsent=true&apiKey=7e7edec16a9e42139a2ca89b0045cf96" alt="" class="nav-icon" />
+                <span>Logout</span>
+              </button>
+            </div>
+          </nav>
+        </aside>
+    
+        <section class="main-content">
+          <header class="page-header">DASHBOARD</header>
+          
+          <div class="content-grid">
+            <section class="content-section">
+              <div class="welcome-container">
+                <h2 class="welcome-text">Welcome, User!</h2>
+                <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/2b37643bb5b7c8cd67242abfe444d5716630108d1c4a39f535401bfb47da6532?placeholderIfAbsent=true&apiKey=7e7edec16a9e42139a2ca89b0045cf96" alt="" class="welcome-icon" />
+              </div>
+              
+              <div class="events-section">
+                <h3 class="events-title">Events Today</h3>
+                <ul class="events-list">
+                  <li class="event-item" tabindex="0">Event 1</li>
+                  <li class="event-item" tabindex="0">Event 2</li>
+                  <li class="event-item" tabindex="0">Event 3</li>
+                  <li class="event-item" tabindex="0">Event 4</li>
+                </ul>
+              </div>
+            </section>
+    
+            <aside class="calendar-widget">
+              <div class="calendar-header">
+                <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f4f65425f12ceaeed3e4278a33a5d09404e54bc55120dc89226bf528d3f75973?placeholderIfAbsent=true&apiKey=7e7edec16a9e42139a2ca89b0045cf96" alt="Previous month" class="calendar-nav" />
+                <span>November 2024</span>
+                <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f77028cb62432b0de321180fa31312786c7f96f97257880cdd64af9b3a85594e?placeholderIfAbsent=true&apiKey=7e7edec16a9e42139a2ca89b0045cf96" alt="Next month" class="calendar-nav" />
+              </div>
+              
+              <div class="calendar-grid">
+                <span class="calendar-day">SUN</span>
+                <span class="calendar-day">MON</span>
+                <span class="calendar-day">TUE</span>
+                <span class="calendar-day">WED</span>
+                <span class="calendar-day">THU</span>
+                <span class="calendar-day">FRI</span>
+                <span class="calendar-day">SAT</span>
+                
+                <span class="calendar-date">1</span>
+                <span class="calendar-date">2</span>
+                <span class="calendar-date">3</span>
+                <span class="calendar-date">4</span>
+                <span class="calendar-date">5</span>
+                <span class="calendar-date">6</span>
+                <span class="calendar-date">7</span>
+                <span class="calendar-date">8</span>
+                <span class="calendar-date">9</span>
+                <span class="calendar-date">10</span>
+                <span class="calendar-date">11</span>
+                <span class="calendar-date">12</span>
+                <span class="calendar-date">13</span>
+                <span class="calendar-date">14</span>
+                <span class="calendar-date">15</span>
+                <span class="calendar-date">16</span>
+                <span class="calendar-date">17</span>
+                <span class="calendar-date">18</span>
+                <span class="calendar-date active">19</span>
+                <span class="calendar-date">20</span>
+                <span class="calendar-date">21</span>
+                <span class="calendar-date">22</span>
+                <span class="calendar-date">23</span>
+                <span class="calendar-date">24</span>
+                <span class="calendar-date">25</span>
+                <span class="calendar-date">26</span>
+                <span class="calendar-date">27</span>
+                <span class="calendar-date">28</span>
+                <span class="calendar-date">29</span>
+                <span class="calendar-date">30</span>
+                <span class="calendar-date">31</span>
+              </div>
+            </aside>
+    
+            <section class="attendance-section">
+              <h3 class="events-title">Attendance Today</h3>
+              <ul class="attendance-list">
+                <li class="attendance-item">
+                  <div class="avatar" role="img" aria-label="Student avatar"></div>
+                  <span>Surname, Name</span>
+                </li>
+                <li class="attendance-item">
+                  <div class="avatar" role="img" aria-label="Student avatar"></div>
+                  <span>Surname, Name</span>
+                </li>
+                <li class="attendance-item">
+                  <div class="avatar" role="img" aria-label="Student avatar"></div>
+                  <span>Surname, Name</span>
+                </li>
+                <li class="attendance-item">
+                  <div class="avatar" role="img" aria-label="Student avatar"></div>
+                  <span>Surname, Name</span>
+                </li>
+                <li class="attendance-item">
+                  <div class="avatar" role="img" aria-label="Student avatar"></div>
+                  <span>Surname, Name</span>
+                </li>
+              </ul>
+    
+              <div class="status-columns">
+                <div class="status-column status-late">Late</div>
+                <div class="status-column status-absent">Absentees</div>
+                <div class="status-column status-excused">Excused</div>
+              </div>
+            </section>
+          </div>
+        </section>
+      </div>
+    </main>
+</body>    
+</html>    

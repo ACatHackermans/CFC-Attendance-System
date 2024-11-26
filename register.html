@@ -1,0 +1,176 @@
+<style>
+  .register-wrapper {
+    overflow: hidden;
+    background-image: url("res/img/CFC Pic.jpg");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 62px 80px;
+  }
+  .auth-container {
+    border-radius: 30px;
+    background-color: #fff;
+    display: flex;
+    width: 550px;
+    max-width: 100%;
+    flex-direction: column;
+    align-items: center;
+    padding: 46px 33px 82px;
+  }
+  .logo {
+    object-fit: contain;
+    object-position: center;
+    width: 150px;
+  }
+  .system-title {
+    color: #098100;
+    letter-spacing: 1px;
+    text-align: center;
+    text-transform: uppercase;
+    margin-top: 28px;
+    font: 700 16px/2.5 Roboto, sans-serif;
+  }
+  .auth-header {
+    color: #000;
+    letter-spacing: 1.5px;
+    text-align: center;
+    margin-top: 97px;
+    font: 600 50px/1 REM, sans-serif;
+  }
+  .auth-form {
+    border-radius: 8px;
+    background-color: #fff;
+    align-self: stretch;
+    display: flex;
+    min-width: 320px;
+    margin-top: 84px;
+    flex-direction: column;
+    padding: 24px;
+    border: 1px solid #d9d9d9;
+  }
+  .form-group {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    margin-bottom: 24px;
+  }
+  .form-label {
+    color: #000;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .form-input {
+    border-radius: 8px;
+    background-color: #fff;
+    width: 100%;
+    color: #666;
+    line-height: 1;
+    padding: 12px 16px;
+    border: 1px solid #d9d9d9;
+  }
+  .submit-btn {
+    border-radius: 8px;
+    background-color: #14ae5c;
+    width: 100%;
+    padding: 12px;
+    color: #fff;
+    border: 1px solid #02542d;
+    cursor: pointer;
+  }
+  .auth-link {
+    text-decoration: underline;
+    margin-top: 24px;
+    width: 100%;
+    color: #000;
+    line-height: 1.4;
+    cursor: pointer;
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+  }
+  @media (max-width: 800px) {
+    .dark-overlay {
+      padding: 0 20px;
+    }
+    .auth-container {
+      padding: 0 20px;
+    }
+    .auth-header {
+      margin-top: 40px;
+      font-size: 40px;
+    }
+    .auth-form {
+      margin-top: 40px;
+      padding: 0 20px;
+    }
+  }
+</style>
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+
+    </head>
+
+    <body>
+        <section class="register-wrapper">
+              <main class="auth-container">
+                <img
+                  loading="lazy"
+                  src="res\img\CFC Logo.svg"
+                  class="logo"
+                  alt="Student Attendance Management System Logo"
+                />
+                <h1 class="system-title">
+                  Student Attendance Management System
+                </h1>
+                <h2 class="auth-header">REGISTER</h2>
+                <form class="auth-form">
+                  <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input 
+                      type="text" 
+                      id="username" 
+                      class="form-input" 
+                      placeholder="Username"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input 
+                      type="password" 
+                      id="password" 
+                      class="form-input" 
+                      placeholder="Password"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="password" class="form-label">Confirm Password</label>
+                    <input 
+                      type="password" 
+                      id="password" 
+                      class="form-input" 
+                      placeholder="Password"
+                      required
+                    />
+                  </div>
+                  <button type="submit" class="submit-btn">Sign Up</button>
+                  <a href="#" class="auth-link">Already have an account?</a>
+                </form>
+              </main>
+          </section>
+    </body>    
+</html>
