@@ -1,2 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-<svg width="800px" height="800px" viewBox="0 0 24 24" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:none;stroke:#020202;stroke-miterlimit:10;stroke-width:1.91px;}</style></defs><path class="cls-1" d="M11.05,3.41A9.54,9.54,0,1,0,20.59,13"/><path class="cls-1" d="M17.79,19.7,11.05,13V1.5A11.45,11.45,0,0,1,22.5,13H12"/></svg>
+<svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 12.5V3.5" stroke="#343434" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M19.794 8L4.20557 17" stroke="#343434" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3.15008 14.1454C2.76041 12.0366 3.13532 9.85796 4.20749 8.00072C5.27966 6.14348 6.97883 4.72933 8.99988 4.01221V10.768L3.15008 14.1454Z" stroke="#343434" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12.0002 3.5C13.577 3.50029 15.1261 3.91485 16.4923 4.70216C17.8585 5.48947 18.9938 6.6219 19.7847 7.98605C20.5755 9.3502 20.9941 10.8982 20.9985 12.475C21.0029 14.0518 20.5929 15.6021 19.8097 16.9706C19.0264 18.3391 17.8973 19.4779 16.5355 20.2728C15.1737 21.0676 13.627 21.4908 12.0502 21.4999C10.4734 21.5089 8.92191 21.1035 7.55108 20.3243C6.18024 19.5451 5.03818 18.4194 4.23926 17.06" stroke="#343434" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
