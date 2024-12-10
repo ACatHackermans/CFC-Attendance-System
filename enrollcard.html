@@ -49,7 +49,7 @@
           align-self: center;
       }      
       .system-title {
-          color: #098100;
+          color: #1C7600;
           font-size: 16px;
           font-weight: 700;
           line-height: 20px;
@@ -73,7 +73,10 @@
           color: #343434;
           font-weight: 700;
           letter-spacing: -0.2px;
-          text-decoration: none;
+          text-decoration: none; 
+      }
+      .nav-item:hover {
+        text-decoration: underline;
       }
       /* .nav-item.active {
           background-color: #098100;
@@ -106,7 +109,7 @@
           width: 50px;
           height: 50px;
       }
-      .username { width: 90px; }
+      /* .username { width: 90px; } */
       .logout-btn {
           border-radius: 10px;
           display: flex;
@@ -114,6 +117,10 @@
           gap: 12px;
           padding: 12px 15px;
           color: #343434;
+          text-decoration: none;
+      }
+      .logout-btn:hover {
+        text-decoration: underline;
       }
       .content-column {
         display: flex;
@@ -177,7 +184,7 @@
         padding: 8px 12px;
         font-family: "SF Pro", sans-serif;
         font-size: 16px;
-        color: rgba(0, 153, 81, 1);
+        color: #009951;
         text-align: center;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
@@ -204,12 +211,12 @@
         );
         border-image-slice: 1;
         box-shadow: 0 10px 4px rgba(0, 0, 0, 0.25);
-        padding: 37px 19px 84px;
+        padding: 37px 19px;
         width: 75%;
       }
       
       .form-group {
-        margin-bottom: 6px;
+        margin-bottom: 12px;
       }
       
       .form-label {
@@ -270,6 +277,9 @@
         /* width: 50px; */
         margin-left: 20px;
         text-decoration: none;
+      }
+      .button:hover {
+        background-color: #12a054;
       }
       .button2 {
         color: #f5f5f5;

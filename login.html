@@ -82,7 +82,7 @@
       }
 
       .system-title {
-        color: #098100;
+        color: #1C7600;
         letter-spacing: 1px;
         text-align: center;
         text-transform: uppercase;
@@ -137,7 +137,7 @@
 
       .submit-btn {
         border-radius: 8px;
-        background-color: #14ae5c;
+        background-color: #009951;
         width: 100%;
         padding: 12px;
         color: #fff;
@@ -152,7 +152,7 @@
       }
 
       .auth-link {
-        text-decoration: underline;
+        text-decoration: none;
         margin-top: 16px;
         width: 100%;
         color: #000;
@@ -160,6 +160,9 @@
         font-size: 14px;
         text-align: center;
         cursor: pointer;
+      }
+      .auth-link:hover {
+        text-decoration: underline;
       }
 
       .visually-hidden {
@@ -223,7 +226,7 @@
                 required
               />
             </div>
-            <button type="submit" class="submit-btn">Sign In</button>
+            <button type="submit" class="submit-btn" onclick="location.replace('dashboard.html')">Sign In</button> <!--remove the onclick js function lel -->
             <a href="#" class="auth-link">Forgot password?</a>
             <a href="register.html" class="auth-link">Create account</a>
           </form>

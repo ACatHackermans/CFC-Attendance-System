@@ -82,7 +82,7 @@
       }
 
       .system-title {
-        color: #098100;
+        color: #1C7600;
         letter-spacing: 1px;
         text-align: center;
         text-transform: uppercase;
@@ -138,7 +138,7 @@
 
       .submit-btn {
         border-radius: 8px;
-        background-color: #14ae5c;
+        background-color: #009951;
         margin-top: 16px;
         width: 100%;
         padding: 12px;
@@ -154,7 +154,7 @@
       }
 
       .auth-link {
-        text-decoration: underline;
+        text-decoration: none;
         margin-top: 15px;
         width: 100%;
         color: #000;
@@ -162,6 +162,9 @@
         font-size: 14px;
         text-align: center;
         cursor: pointer;
+      }
+      .auth-link:hover {
+        text-decoration: underline;
       }
 
       .visually-hidden {
@@ -235,7 +238,7 @@
                 required
               />
             </div>
-            <button type="submit" class="submit-btn">Sign Up</button>
+            <button type="submit" class="submit-btn" onclick="location.replace('login.html')">Sign Up</button> <!--remove the onclick js function lel -->
             <a href="login.html" class="auth-link">Already have an account?</a>
           </form>
         </main>
