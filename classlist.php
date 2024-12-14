@@ -1,3 +1,41 @@
+<?php 
+session_start();
+
+  require("connection.php");
+
+  if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+
+    $sql = "SELECT username FROM users WHERE user_id = ?";
+    $stmt = $con->prepare($sql);
+    $stmt->bind_param("i", $user_id); // Assuming user_id is an integer
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $username = "";
+
+    if ($result->num_rows > 0) {
+        // Fetch the associated field information
+        while ($row = $result->fetch_assoc()) {
+            $username .= htmlspecialchars($row['username']);
+        }
+    } else {
+      $username = "No record found.";
+    }
+
+    // Query to fetch data from the class_list table
+    $sql = "SELECT student_num, surname, first_name, birthday, email, contact_num, guardian_name, guardian_num FROM class_list";
+    $result = $con->query($sql);
+
+    $stmt->close();
+    $con->close();
+  } else {
+    // Redirect to login if not logged in yet
+    header("Location: ./login.php");
+    die;
+  }
+?>
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -5,6 +43,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Class List - CFCSR Student Attendance Management System</title>
+    <link rel="icon" type="image/x-icon" href="./res/img/favicon.ico">
 
     <style>
       html, body {
@@ -276,19 +315,19 @@
             <h1 class="system-title">Student Attendance Management System</h1>
             
             <div class="nav-tabs">
-              <a href="dashboard.html" class="nav-item">
+              <a href="dashboard.php" class="nav-item">
                 <img src="res\icons\home.svg" alt="" class="nav-icon" />
                 <span>Home</span>
               </a>
-              <a href="classlist.html" class="nav-item">
+              <a href="classlist.php" class="nav-item">
                 <img src="res\icons\users.svg" alt="" class="nav-icon" />
                 <span>Class List</span>
               </a>
-              <a href="attendancereport.html" class="nav-item">
+              <a href="attendancereport.php" class="nav-item">
                 <img src="res\icons\pie-graph.svg" alt="" class="nav-icon" />
                 <span>Student Attendance Report</span>
               </a>
-              <a href="attendancelogin.html" class="nav-item">
+              <a href="attendancelogin.php" class="nav-item">
                 <img src="res\icons\card.svg" alt="" class="nav-icon" />
                 <span>Student Attendance Login & NFC Enrollment</span>
               </a>
@@ -297,9 +336,9 @@
             <div class="user-section">
               <div class="user-profile">
                 <div class="avatar" role="img" aria-label="User avatar"></div>
-                <span class="username">Username</span>
+                <span class="username"><?php echo $username; ?></span>
               </div>
-              <a class="logout-btn" href="login.html" target="_parent" style="font-weight: 700;">
+              <a class="logout-btn" href="logout.php" target="_parent" style="font-weight: 700;">
                 <img src="res\icons\logout.svg" alt="" class="nav-icon" />
                 Logout
               </a>
@@ -339,7 +378,6 @@
                 <table class="data-table" role="grid">
                   <thead>
                     <tr class="table-row">
-                      <th class="table-cell">ID</th>
                       <th class="table-cell">Student Number</th>
                       <th class="table-cell">Surname</th>
                       <th class="table-cell">First Name</th>
@@ -347,21 +385,29 @@
                       <th class="table-cell">Email</th>
                       <th class="table-cell">Contact Number</th>
                       <th class="table-cell">Guardian First Name</th>
-                      <th class="table-cell">Guardian Contact</th>
+                      <th class="table-cell">Guardian Contact Number</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr class="table-row">
-                      <td class="table-cell"></td>
-                      <td class="table-cell"></td>
-                      <td class="table-cell"></td>
-                      <td class="table-cell"></td>
-                      <td class="table-cell"></td>
-                      <td class="table-cell"></td>
-                      <td class="table-cell"></td>
-                      <td class="table-cell"></td>
-                      <td class="table-cell"></td>
-                    </tr>
+                    <?php
+                      if ($result->num_rows > 0) {
+                        // Output data for each row
+                        while ($row = $result->fetch_assoc()) {
+                          echo "<tr class='table-row' style='text-align: center;'>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['student_num']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['surname']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['first_name']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['birthday']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['email']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['contact_num']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['guardian_name']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['guardian_num']) . "</td>";
+                          echo "</tr>";
+                        }
+                      } else {
+                        echo "<tr><td colspan='8' class='table-cell'>No records found</td></tr>";
+                      }
+                    ?>
                   </tbody>
                 </table>
               </div>

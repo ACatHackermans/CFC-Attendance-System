@@ -1,3 +1,36 @@
+<?php 
+session_start();
+
+  require("connection.php");
+
+  if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+
+    $sql = "SELECT username FROM users WHERE user_id = ?";
+    $stmt = $con->prepare($sql);
+    $stmt->bind_param("i", $user_id); // Assuming user_id is an integer
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $username = "";
+
+    if ($result->num_rows > 0) {
+        // Fetch the associated field information
+        while ($row = $result->fetch_assoc()) {
+            $username .= htmlspecialchars($row['username']);
+        }
+    } else {
+      $username = "No record found.";
+    }
+
+    $stmt->close();
+  } else {
+    // Redirect to login if not logged in yet
+    header("Location: ./login.php");
+    die;
+  }
+?>
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -5,6 +38,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home Dashboard - CFCSR Student Attendance Management System</title>
+    <link rel="icon" type="image/x-icon" href="./res/img/favicon.ico">
 
     <style>
       html, body {
@@ -342,19 +376,19 @@
             <h1 class="system-title">Student Attendance Management System</h1>
             
             <div class="nav-tabs">
-              <a href="dashboard.html" class="nav-item">
+              <a href="dashboard.php" class="nav-item">
                 <img src="res\icons\home.svg" alt="" class="nav-icon" />
                 <span>Home</span>
               </a>
-              <a href="classlist.html" class="nav-item">
+              <a href="classlist.php" class="nav-item">
                 <img src="res\icons\users.svg" alt="" class="nav-icon" />
                 <span>Class List</span>
               </a>
-              <a href="attendancereport.html" class="nav-item">
+              <a href="attendancereport.php" class="nav-item">
                 <img src="res\icons\pie-graph.svg" alt="" class="nav-icon" />
                 <span>Student Attendance Report</span>
               </a>
-              <a href="attendancelogin.html" class="nav-item">
+              <a href="attendancelogin.php" class="nav-item">
                 <img src="res\icons\card.svg" alt="" class="nav-icon" />
                 <span>Student Attendance Login & NFC Enrollment</span>
               </a>
@@ -363,9 +397,9 @@
             <div class="user-section">
               <div class="user-profile">
                 <div class="avatar" role="img" aria-label="User avatar"></div>
-                <span class="username">Username</span>
+                <span class="username"><?php echo $username; ?></span>
               </div>
-              <a class="logout-btn" href="login.html" target="_parent" style="font-weight: 700;">
+              <a class="logout-btn" href="logout.php" style="font-weight: 700;"> <!-- target="_parent" -->
                 <img src="res\icons\logout.svg" alt="" class="nav-icon" />
                 Logout
               </a>
@@ -441,58 +475,57 @@
     </main>
 
     <script>
-        // Initialize the calendar
-        function generateCalendar() {
-          const calendarGrid = document.getElementById('calendar-grid');
-          const monthYear = document.getElementById('month-year');
-    
-          const now = new Date();
-          const year = now.getFullYear();
-          const month = now.getMonth();
-          const today = now.getDate();
-    
-          const daysInMonth = new Date(year, month + 1, 0).getDate();
-          const firstDay = new Date(year, month, 1).getDay();
-    
-          const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    
-          // Clear calendar grid
-          calendarGrid.innerHTML = '';
-    
-          // Display the current month and year
-          monthYear.textContent = now.toLocaleString('default', {
-            month: 'long',
-            year: 'numeric',
-          });
-    
-          // Add day names
-          daysOfWeek.forEach(day => {
-            const dayElement = document.createElement('div');
-            dayElement.textContent = day;
-            dayElement.classList.add('day', 'day-name');
-            calendarGrid.appendChild(dayElement);
-          });
-    
-          // Add empty boxes before the first day of the month
-          for (let i = 0; i < firstDay; i++) {
-            const emptyCell = document.createElement('div');
-            calendarGrid.appendChild(emptyCell);
-          }
-    
-          // Add days of the month
-          for (let day = 1; day <= daysInMonth; day++) {
-            const dayElement = document.createElement('div');
-            dayElement.textContent = day;
-            dayElement.classList.add('day');
-            if (day === today) {
-              dayElement.classList.add('today');
-            }
-            calendarGrid.appendChild(dayElement);
-          }
+      // Initialize the calendar
+      function generateCalendar() {
+        const calendarGrid = document.getElementById('calendar-grid');
+        const monthYear = document.getElementById('month-year');
+
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth();
+        const today = now.getDate();
+
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const firstDay = new Date(year, month, 1).getDay();
+
+        const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+        // Clear calendar grid
+        calendarGrid.innerHTML = '';
+
+        // Display the current month and year
+        monthYear.textContent = now.toLocaleString('default', {
+          month: 'long',
+          year: 'numeric',
+        });
+
+        // Add day names
+        daysOfWeek.forEach(day => {
+          const dayElement = document.createElement('div');
+          dayElement.textContent = day;
+          dayElement.classList.add('day', 'day-name');
+          calendarGrid.appendChild(dayElement);
+        });
+
+        // Add empty boxes before the first day of the month
+        for (let i = 0; i < firstDay; i++) {
+          const emptyCell = document.createElement('div');
+          calendarGrid.appendChild(emptyCell);
         }
-    
-        // Generate the calendar when the page loads
-        generateCalendar();
-      </script>
+
+        // Add days of the month
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dayElement = document.createElement('div');
+          dayElement.textContent = day;
+          dayElement.classList.add('day');
+          if (day === today) {
+            dayElement.classList.add('today');
+          }
+          calendarGrid.appendChild(dayElement);
+        }
+      }
+      // Generate the calendar when the page loads
+      generateCalendar();
+    </script>
   </body>
 </html>    

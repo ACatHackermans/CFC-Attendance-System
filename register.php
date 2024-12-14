@@ -1,3 +1,39 @@
+<?php
+  session_start();
+
+  require("connection.php");
+
+  if (isset($_SESSION['user_id'])) {
+    header("Location: ./dashboard.php");
+  }
+
+  if($_SERVER['REQUEST_METHOD'] == "POST") {
+    if($_POST['password'] == $_POST['confirm_password']) {
+      $username = htmlspecialchars($_POST['username'], ENT_QUOTES);
+      $password = password_hash(htmlspecialchars($_POST['password'], ENT_QUOTES), PASSWORD_BCRYPT);
+
+      if ($username !== trim($username)) {
+        echo "<script>alert('Username cannot start or end with a whitespace.');</script>";
+      } else if (strpos($password, ' ') !== false) {
+        echo "<script>alert('Password cannot have spaces.');</script>";
+      } else {
+        $username = trim($username);
+        
+        // Save to database
+        $stmt = $con->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
+        $stmt->bind_param("ss", $username, $password);
+
+        if (!$stmt->execute()) {
+          echo "<script>alert('Error: " . $stmt->error . "');</script>";
+        } else {
+          header("Location: login.php");
+          die;
+        }
+      }
+    }
+  }
+?>
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -5,6 +41,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register - CFCSR Student Attendance Management System</title>
+    <link rel="icon" type="image/x-icon" href="./res/img/favicon.ico">
 
     <style>
       /* Global styles */
@@ -207,12 +244,13 @@
             Student Attendance Management System
           </h1>
           <h2 class="auth-header">REGISTER</h2>
-          <form class="auth-form">
+          <form class="auth-form" action="<?php htmlspecialchars($_SERVER["PHP_SELF"])?>" method="post">
             <div class="form-group">
               <label for="username" class="form-label">Username</label>
               <input 
                 type="text" 
                 id="username" 
+                name="username"
                 class="form-input" 
                 placeholder="Enter your username"
                 required
@@ -222,9 +260,11 @@
               <label for="password" class="form-label">Password</label>
               <input 
                 type="password" 
-                id="password" 
+                id="password"
+                name="password" 
                 class="form-input" 
                 placeholder="Enter your password"
+                oninput="check()"
                 required
               />
             </div>
@@ -232,16 +272,21 @@
               <label for="password" class="form-label">Confirm Password</label>
               <input 
                 type="password" 
-                id="confirm-password" 
+                id="confirm_password"
+                name="confirm_password" 
                 class="form-input" 
                 placeholder="Re-enter your password"
+                oninput="check()"
                 required
               />
             </div>
-            <button type="submit" class="submit-btn" onclick="location.replace('login.html')">Sign Up</button> <!--remove the onclick js function lel -->
-            <a href="login.html" class="auth-link">Already have an account?</a>
+            <p id="message"></p>
+            <input type="submit" class="submit-btn" name="submit" id="submit" value="Sign Up">
+            <a href="login.php" class="auth-link">Already have an account?</a>
           </form>
         </main>
       </section>
+
+      <script src="script.js"></script>
     </body>    
 </html>

@@ -1,3 +1,36 @@
+<?php 
+session_start();
+
+  require("connection.php");
+
+  if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+
+    $sql = "SELECT username FROM users WHERE user_id = ?";
+    $stmt = $con->prepare($sql);
+    $stmt->bind_param("i", $user_id); // Assuming user_id is an integer
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $username = "";
+
+    if ($result->num_rows > 0) {
+        // Fetch the associated field information
+        while ($row = $result->fetch_assoc()) {
+            $username .= htmlspecialchars($row['username']);
+        }
+    } else {
+      $username = "No record found.";
+    }
+
+    $stmt->close();
+  } else {
+    // Redirect to login if not logged in yet
+    header("Location: ./login.php");
+    die;
+  }
+?>
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -5,6 +38,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Attendance Reports - CFCSR Student Attendance Management System</title>
+    <link rel="icon" type="image/x-icon" href="./res/img/favicon.ico">
 
     <style>
       html, body {
@@ -300,19 +334,19 @@
             <h1 class="system-title">Student Attendance Management System</h1>
             
             <div class="nav-tabs">
-              <a href="dashboard.html" class="nav-item">
+              <a href="dashboard.php" class="nav-item">
                 <img src="res\icons\home.svg" alt="" class="nav-icon" />
                 <span>Home</span>
               </a>
-              <a href="classlist.html" class="nav-item">
+              <a href="classlist.php" class="nav-item">
                 <img src="res\icons\users.svg" alt="" class="nav-icon" />
                 <span>Class List</span>
               </a>
-              <a href="attendancereport.html" class="nav-item">
+              <a href="attendancereport.php" class="nav-item">
                 <img src="res\icons\pie-graph.svg" alt="" class="nav-icon" />
                 <span>Student Attendance Report</span>
               </a>
-              <a href="attendancelogin.html" class="nav-item">
+              <a href="attendancelogin.php" class="nav-item">
                 <img src="res\icons\card.svg" alt="" class="nav-icon" />
                 <span>Student Attendance Login & NFC Enrollment</span>
               </a>
@@ -321,9 +355,9 @@
             <div class="user-section">
               <div class="user-profile">
                 <div class="avatar" role="img" aria-label="User avatar"></div>
-                <span class="username">Username</span>
+                <span class="username"><?php echo $username; ?></span>
               </div>
-              <a class="logout-btn" href="login.html" target="_parent" style="font-weight: 700;">
+              <a class="logout-btn" href="logout.php" target="_parent" style="font-weight: 700;">
                 <img src="res\icons\logout.svg" alt="" class="nav-icon" />
                 Logout
               </a>
@@ -368,7 +402,6 @@
                 <table class="data-table" role="grid">
                   <thead>
                     <tr class="table-row">
-                      <th class="table-cell">ID</th>
                       <th class="table-cell">Student Number</th>
                       <th class="table-cell">Surname</th>
                       <th class="table-cell">First Name</th>
@@ -380,13 +413,6 @@
                   </thead>
                   <tbody>
                     <tr class="table-row">
-                      <td class="table-cell"></td>
-                      <td class="table-cell"></td>
-                      <td class="table-cell"></td>
-                      <td class="table-cell"></td>
-                      <td class="table-cell"></td>
-                      <td class="table-cell"></td>
-                      <td class="table-cell"></td>
                       <td class="table-cell"></td>
                     </tr>
                   </tbody>

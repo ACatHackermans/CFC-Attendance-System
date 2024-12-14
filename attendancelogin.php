@@ -1,10 +1,44 @@
+<?php 
+session_start();
+
+  require("connection.php");
+
+  if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+
+    $sql = "SELECT username FROM users WHERE user_id = ?";
+    $stmt = $con->prepare($sql);
+    $stmt->bind_param("i", $user_id); // Assuming user_id is an integer
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $username = "";
+
+    if ($result->num_rows > 0) {
+        // Fetch the associated field information
+        while ($row = $result->fetch_assoc()) {
+            $username .= htmlspecialchars($row['username']);
+        }
+    } else {
+      $username = "No record found.";
+    }
+
+    $stmt->close();
+  } else {
+    // Redirect to login if not logged in yet
+    header("Location: ./login.php");
+    die;
+  }
+?>
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Enroll an NFC Card - CFCSR Student Attendance Management System</title>
+    <title>Attendance Login - CFCSR Student Attendance Management System</title>
+    <link rel="icon" type="image/x-icon" href="./res/img/favicon.ico">
 
     <style>
       html, body {
@@ -73,7 +107,7 @@
           color: #343434;
           font-weight: 700;
           letter-spacing: -0.2px;
-          text-decoration: none; 
+          text-decoration: none;
       }
       .nav-item:hover {
         text-decoration: underline;
@@ -108,7 +142,7 @@
           border-radius: 50%;
           width: 50px;
           height: 50px;
-      }
+      }      
       /* .username { width: 90px; } */
       .logout-btn {
           border-radius: 10px;
@@ -184,18 +218,18 @@
         padding: 8px 12px;
         font-family: "SF Pro", sans-serif;
         font-size: 16px;
-        color: #009951;
+        color: rgba(0, 153, 81, 1);
         text-align: center;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
-      .enrollment-form {
+      .attendance-login {
         display: flex; /* Enable flexbox */
         justify-content: space-between; /* Distribute space between the items */
         align-items: flex-start; /* Align items to the top */
         gap: 20px; /* Add some space between the form and NFC section */
         margin: 20px; /* Add padding around the container */
       }      
-      .form-container {
+      .loggingin-container {
         background: linear-gradient(
           180deg,
           rgba(255, 255, 255, 0.15) 0%,
@@ -211,30 +245,23 @@
         );
         border-image-slice: 1;
         box-shadow: 0 10px 4px rgba(0, 0, 0, 0.25);
-        padding: 37px 19px;
+        padding: 37px 19px 84px;
         width: 75%;
+        text-align: left;
+        font-family: "Rem-Regular", sans-serif;
+        font-size: 20px;
+        font-weight: 400;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 30px;
       }
-      
-      .form-group {
-        margin-bottom: 12px;
-      }
-      
-      .form-label {
-        color: #666;
-        font-size: 12px;
-        font-weight: 600;
-        font-family: Noto Sans, sans-serif;
-        margin-bottom: 8px;
-        display: block; 
-      }
-      
-      .form-input {
-        border: 1px solid #ccc;
-        border-radius: 12px;
-        padding: 6px;
-        font-size: 12px;
-      }
-      
+      .student-avatar {
+          background-color: #d9d9d9;
+          border-radius: 50%;
+          width: 150px;
+          height: 150px;
+      }      
       .nfc-section {
         background: linear-gradient(
           180deg,
@@ -251,10 +278,13 @@
         );
         border-image-slice: 1;
         box-shadow: 0 10px 4px rgba(0, 0, 0, 0.25);
-        padding: 20px;
+        padding: 10px;
         font: 400 30px REM, sans-serif;
         width: 25%;
         align-items: center;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
       }
       .NFC-icon {
         /* aspect-ratio: 0.99; */
@@ -275,13 +305,8 @@
         align-items: center;
         /* justify-content: center; */
         /* width: 50px; */
-        margin-left: 20px;
+        /* margin-left: 20px; */
         text-decoration: none;
-      }
-      .button:hover {
-        background-color: #12a054;
-      }
-      .button2 {
         color: #f5f5f5;
         /* text-align: left; */
         font-family: var(
@@ -289,11 +314,14 @@
           "Inter-Regular",
           sans-serif
         );
-        font-size: var(--single-line-body-base-font-size, 16px);
+        /* font-size: var(--single-line-body-base-font-size, 16px); */
         /* line-height: var(--single-line-body-base-line-height, 100%); */
-        font-weight: var(--single-line-body-base-font-weight, 400);
-        /* position: relative; */        
+        /* font-weight: var(--single-line-body-base-font-weight, 400); */
+        /* position: relative; */
       }
+      .button:hover {
+        background-color: #12a054;
+      }      
       /* .scroll-track {
         border-radius: 6px;
         background-color: #e2e2e2;
@@ -361,19 +389,19 @@
             <h1 class="system-title">Student Attendance Management System</h1>
             
             <div class="nav-tabs">
-              <a href="dashboard.html" class="nav-item">
+              <a href="dashboard.php" class="nav-item">
                 <img src="res\icons\home.svg" alt="" class="nav-icon" />
                 <span>Home</span>
               </a>
-              <a href="classlist.html" class="nav-item">
+              <a href="classlist.php" class="nav-item">
                 <img src="res\icons\users.svg" alt="" class="nav-icon" />
                 <span>Class List</span>
               </a>
-              <a href="attendancereport.html" class="nav-item">
+              <a href="attendancereport.php" class="nav-item">
                 <img src="res\icons\pie-graph.svg" alt="" class="nav-icon" />
                 <span>Student Attendance Report</span>
               </a>
-              <a href="attendancelogin.html" class="nav-item">
+              <a href="attendancelogin.php" class="nav-item">
                 <img src="res\icons\card.svg" alt="" class="nav-icon" />
                 <span>Student Attendance Login & NFC Enrollment</span>
               </a>
@@ -382,9 +410,9 @@
             <div class="user-section">
               <div class="user-profile">
                 <div class="avatar" role="img" aria-label="User avatar"></div>
-                <span class="username">Username</span>
+                <span class="username"><?php echo $username; ?></span>
               </div>
-              <a class="logout-btn" href="login.html" target="_parent" style="font-weight: 700;">
+              <a class="logout-btn" href="logout.php" target="_parent" style="font-weight: 700;">
                 <img src="res\icons\logout.svg" alt="" class="nav-icon" />
                 Logout
               </a>
@@ -405,72 +433,43 @@
                 Strand: STEM
               </div>
 
-              <div class="subtitle">ENROLLMENT</div>
+              <div class="subtitle">LOGIN</div>
 
               <div class="datetime-wrapper">
                 <time class="date-display">Nov 19, 2024</time>
                 <time class="time-display">9:41 AM</time>
               </div>
 
-              <a href="attendancelogin.html" class="button">
-                <div class="button2">Login Attendance</div>
+              <a href="enrollcard.php" class="button">
+                <span>Enroll New NFC Card</span>
               </a>
+            </div>    
+            <div class="attendance-login">
+              <div class="loggingin-container">
+                <div class="student-avatar" role="img" aria-label="Student Profile"></div>
+                  Surname, Name
+                  <br /><br />
+                  Time In: --:--
+                  <br />
+                  Time Out: --:--
+                  <br />
+                  Status: ---
+                  <br />
+                  <!--Guardian Notification Sent ✓-->
+              </div>
 
-            <div class="enrollment-form">
-              <form class="form-container">
-                <div class="form-group">
-                  <label for="studentNumber" class="form-label">Student Number</label>
-                  <input type="text" id="studentNumber" class="form-input" placeholder="Type here">
-                </div>
-      
-                <div class="form-group">
-                  <label for="surname" class="form-label">Surname</label>
-                  <input type="text" id="surname" class="form-input" placeholder="Type here">
-                </div>
-      
-                <div class="form-group">
-                  <label for="name" class="form-label">Name</label>
-                  <input type="text" id="name" class="form-input" placeholder="Type here">
-                </div>
-      
-                <div class="form-group">
-                  <label for="email" class="form-label">Email</label>
-                  <input type="email" id="email" class="form-input" placeholder="Type here">
-                </div>
-      
-                <div class="form-group">
-                  <label for="birthday" class="form-label">Birthday</label>
-                  <input type="date" id="birthday" class="form-input" placeholder="Type here">
-                </div>
-      
-                <div class="form-group">
-                  <label for="contact" class="form-label">Contact Number</label>
-                  <input type="tel" id="contact" class="form-input" placeholder="Type here">
-                </div>
-      
-                <div class="form-group">
-                  <label for="guardian" class="form-label">Guardian/Parent Name</label>
-                  <input type="text" id="guardian" class="form-input" placeholder="Type here">
-                </div>
-      
-                <div class="form-group">
-                  <label for="guardianContact" class="form-label">Guardian/Parent Contact Number</label>
-                  <input type="tel" id="guardianContact" class="form-input" placeholder="Type here">
-                </div>                
-              </form>
-                 
               <aside class="nfc-section">
                 <img src="res\icons\NFC.svg" alt="NFC icon" class="NFC-icon" />
-                Please tap unenrolled NFC card on the NFC reader and fill out the form to enroll...
+                Please tap NFC-enabled card on the NFC reader to take attendance...
               </aside>
-            </div>  
-            
-            <a href="#" class="button">
-              <div class="button2">Submit</div>
-            </a>
+            </div>            
           </div>
         </section>
       </div>
     </main>
+
+    <script>
+      
+    </script>
   </body>
 </html>    

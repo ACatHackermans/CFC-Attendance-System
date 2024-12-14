@@ -1,3 +1,33 @@
+<?php
+  session_start();
+
+  require("connection.php");
+
+  if (isset($_SESSION['user_id'])) {
+    header("Location: ./dashboard.php");
+  }
+
+  if($_SERVER['REQUEST_METHOD'] == "POST") {
+    $username = htmlspecialchars($_POST['username'], ENT_QUOTES);
+    $password = htmlspecialchars($_POST['password'], ENT_QUOTES);
+    
+    //Read from database
+    $stmt = $con->prepare("SELECT * FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user_data = $result->fetch_assoc();
+
+    if ($user_data && mysqli_num_rows($result) > 0 && password_verify($password, $user_data['password'])) {
+      $_SESSION['user_id'] = $user_data['user_id'];
+      header("Location: dashboard.php");
+      die;
+    } else {
+      echo "<script>alert('Incorrect username or password.');</script>";
+    }   
+  }
+?>
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -5,6 +35,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - CFCSR Student Attendance Management System</title>
+    <link rel="icon" type="image/x-icon" href="./res/img/favicon.ico">
 
     <style>
       /* Global styles */
@@ -205,12 +236,13 @@
             Student Attendance Management System
           </h1>
           <h2 class="auth-header">LOGIN</h2>
-          <form class="auth-form">
+          <form class="auth-form" action="<?php htmlspecialchars($_SERVER["PHP_SELF"])?>" method="post" >
             <div class="form-group">
               <label for="username" class="form-label">Username</label>
               <input 
                 type="text" 
                 id="username" 
+                name="username"
                 class="form-input" 
                 placeholder="Enter your username"
                 required
@@ -221,14 +253,16 @@
               <input 
                 type="password" 
                 id="password" 
+                name="password"
                 class="form-input" 
                 placeholder="Enter your password"
                 required
               />
             </div>
-            <button type="submit" class="submit-btn" onclick="location.replace('dashboard.html')">Sign In</button> <!--remove the onclick js function lel -->
+            <input type="submit" class="submit-btn" value="Log In">
+            <p id="message"></p>
             <a href="#" class="auth-link">Forgot password?</a>
-            <a href="register.html" class="auth-link">Create account</a>
+            <a href="register.php" class="auth-link">Create account</a>
           </form>
         </main>
       </section>
