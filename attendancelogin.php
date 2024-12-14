@@ -259,8 +259,8 @@ session_start();
       .student-avatar {
           background-color: #d9d9d9;
           border-radius: 50%;
-          width: 150px;
-          height: 150px;
+          width: 200px;
+          height: 200px;
       }      
       .nfc-section {
         background: linear-gradient(
@@ -436,8 +436,8 @@ session_start();
               <div class="subtitle">LOGIN</div>
 
               <div class="datetime-wrapper">
-                <time class="date-display">Nov 19, 2024</time>
-                <time class="time-display">9:41 AM</time>
+                <time class="date-display"></time>
+                <time class="time-display"></time>
               </div>
 
               <a href="enrollcard.php" class="button">
@@ -447,15 +447,17 @@ session_start();
             <div class="attendance-login">
               <div class="loggingin-container">
                 <div class="student-avatar" role="img" aria-label="Student Profile"></div>
-                  Surname, Name
-                  <br /><br />
+                <div style="line-height: 40px;">
+                  <b>Surname, Name</b>
+                  <br />
                   Time In: --:--
                   <br />
                   Time Out: --:--
                   <br />
                   Status: ---
                   <br />
-                  <!--Guardian Notification Sent ✓-->
+                  Guardian Notification Sent ✓
+                </div>
               </div>
 
               <aside class="nfc-section">
@@ -469,7 +471,36 @@ session_start();
     </main>
 
     <script>
-      
+      // Function to update date and time every second
+      function updateDateTime() {
+        const dateDisplay = document.querySelector('.date-display');
+        const timeDisplay = document.querySelector('.time-display');
+        
+        const currentDate = new Date();
+
+        // Format date as "Nov 19, 2024"
+        const formattedDate = currentDate.toLocaleDateString('en-US', {
+          weekday: 'short', 
+          month: 'short', 
+          day: 'numeric', 
+          year: 'numeric'
+        });
+        
+        // Format time as "9:41 AM"
+        const formattedTime = currentDate.toLocaleTimeString('en-US', {
+          hour: 'numeric', 
+          minute: 'numeric', 
+          hour12: true
+        });
+
+        // Update the time and date on the page
+        dateDisplay.textContent = formattedDate;
+        timeDisplay.textContent = formattedTime;
+      }
+
+      // Call the function initially and then every second
+      updateDateTime();
+      setInterval(updateDateTime, 1000);
     </script>
   </body>
 </html>    

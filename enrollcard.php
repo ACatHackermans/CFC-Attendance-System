@@ -299,14 +299,15 @@ session_start();
         font-weight: 600;
         font-family: Noto Sans, sans-serif;
         margin-bottom: 8px;
-        display: block; 
+        display: block;
       }
       
       .form-input {
         border: 1px solid #ccc;
-        border-radius: 10px;
-        padding: 12px 40px 12px;
+        border-radius: 10px;        
         font-size: 12px;
+        text-align: left;
+        padding: 12px 12px 12px 12px;
       }
       
       .nfc-section {
@@ -483,8 +484,8 @@ session_start();
               <div class="subtitle">ENROLLMENT</div>
 
               <div class="datetime-wrapper">
-                <time class="date-display">Nov 19, 2024</time>
-                <time class="time-display">9:41 AM</time>
+                <time class="date-display"></time>
+                <time class="time-display"></time>
               </div>
 
               <a href="attendancelogin.php" class="button">
@@ -529,12 +530,12 @@ session_start();
                 </div>  
                 <div style="display: flex; gap: 20px;">        
                   <div class="form-group">
-                    <label for="guardianName" class="form-label">Guardian/Parent Name</label>
+                    <label for="guardianName" class="form-label">Guardian / Parent Name</label>
                     <input type="text" id="guardianName" name="guardianName" class="form-input" placeholder="Type here" required>
                   </div>
         
                   <div class="form-group">
-                    <label for="guardianNumber" class="form-label">Guardian/Parent Contact Number</label>
+                    <label for="guardianNumber" class="form-label">Guardian / Parent Contact Number</label>
                     <input type="tel" id="guardianNumber" name="guardianNumber" class="form-input" placeholder="Type here" required>
                   </div>
                 </div>
@@ -552,5 +553,38 @@ session_start();
         </section>
       </div>
     </main>
+
+    <script>
+      // Function to update date and time every second
+      function updateDateTime() {
+        const dateDisplay = document.querySelector('.date-display');
+        const timeDisplay = document.querySelector('.time-display');
+        
+        const currentDate = new Date();
+
+        // Format date as "Nov 19, 2024"
+        const formattedDate = currentDate.toLocaleDateString('en-US', {
+          weekday: 'short', 
+          month: 'short', 
+          day: 'numeric', 
+          year: 'numeric'
+        });
+        
+        // Format time as "9:41 AM"
+        const formattedTime = currentDate.toLocaleTimeString('en-US', {
+          hour: 'numeric', 
+          minute: 'numeric', 
+          hour12: true
+        });
+
+        // Update the time and date on the page
+        dateDisplay.textContent = formattedDate;
+        timeDisplay.textContent = formattedTime;
+      }
+
+      // Call the function initially and then every second
+      updateDateTime();
+      setInterval(updateDateTime, 1000);
+    </script>
   </body>
 </html>    

@@ -23,4 +23,3 @@ function check() {
 
   submit.disabled = false;
 }
-

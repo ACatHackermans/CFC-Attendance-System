@@ -379,8 +379,8 @@ session_start();
               </div>
 
               <div class="datetime-wrapper">
-                <time class="date-display">Nov 19, 2024</time>
-                <time class="time-display">9:41 AM</time>
+                <time class="date-display"></time>
+                <time class="time-display"></time>
               </div>
               
               <div class="search-controls">
@@ -427,5 +427,38 @@ session_start();
         </section>
       </div>
     </main>
+
+    <script>
+      // Function to update date and time every second
+      function updateDateTime() {
+        const dateDisplay = document.querySelector('.date-display');
+        const timeDisplay = document.querySelector('.time-display');
+        
+        const currentDate = new Date();
+
+        // Format date as "Nov 19, 2024"
+        const formattedDate = currentDate.toLocaleDateString('en-US', {
+          weekday: 'short', 
+          month: 'short', 
+          day: 'numeric', 
+          year: 'numeric'
+        });
+        
+        // Format time as "9:41 AM"
+        const formattedTime = currentDate.toLocaleTimeString('en-US', {
+          hour: 'numeric', 
+          minute: 'numeric', 
+          hour12: true
+        });
+
+        // Update the time and date on the page
+        dateDisplay.textContent = formattedDate;
+        timeDisplay.textContent = formattedTime;
+      }
+
+      // Call the function initially and then every second
+      updateDateTime();
+      setInterval(updateDateTime, 1000);
+    </script>
   </body>
 </html>    

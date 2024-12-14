@@ -274,16 +274,17 @@ session_start();
       }
       .attendance-section {
         display: flex;
-        justify-content: center;
         align-items: center;
         flex-direction: column;
         width: 25%;
       }
       .attendance-list {
         display: flex;
-        justify-content: left;
-        align-items: left;
+        align-items: center;
         flex-direction: column;
+        width: 100%;
+        padding: 0;
+        margin: 0;
       }
       .student-avatar {
         background-color: #d9d9d9;
@@ -295,7 +296,9 @@ session_start();
         display: flex;
         align-items: center;
         gap: 10px;
-        padding: 10px;
+        padding: 5px;
+        width: 100%;
+        justify-content: center;
       }
       .status-columns {
         display: grid;
@@ -437,7 +440,7 @@ session_start();
             </div>    
             <div class="bottom-section">
               <div class="attendance-section">
-                <h3 class="events-title">Attendance Today</h3>
+                <h3>Attendance Today</h3>
                 <ul class="attendance-list">
                   <li class="attendance-item">
                     <div class="student-avatar" role="img" aria-label="Student avatar"></div>
@@ -450,7 +453,7 @@ session_start();
                   <li class="attendance-item">
                     <div class="student-avatar" role="img" aria-label="Student avatar"></div>
                     <span>Surname, Name</span>
-                  </li>                  
+                  </li>
                 </ul>
               </div>
 
