@@ -417,7 +417,7 @@ session_start();
             <div class="top-section">
                 <div class="welcome-and-events">
                   <div class="welcome">
-                    Welcome, Admin.
+                    Welcome, <?php echo $username; ?>.
                       <div class="user-avatar" role="img" aria-label="User avatar"></div>
                   </div>  
                       
