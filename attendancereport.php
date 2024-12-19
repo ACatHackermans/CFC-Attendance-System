@@ -45,13 +45,18 @@ session_start();
         margin: 0;
         padding: 0;
         width: 100%;
-        min-height: 100vh;
+        position: relative;
+      }
+      .bottom-outline {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        box-shadow: 0 0 4px 3px rgb(11, 158, 0);
       }
       .page-wrapper {
         box-sizing: border-box;
         width: 100%;
-        min-height: 100vh; /* Full viewport height */
-        overflow-y: auto; 
         margin: 0;
       }
       .main-layout {
@@ -61,101 +66,92 @@ session_start();
         margin: auto;
       }
       .sidebar-column {
-      display: flex;
-      flex-direction: column;
-      line-height: normal;
-      width: 25%;
-      /* min-width: 250px;
-      max-width: 300px; */
-      background-color: #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        line-height: normal;
+        width: 25%;
+        /* min-width: 250px;
+        max-width: 300px; */
+        background-color: #f0f0f0;
       }
       .sidebar { 
-          display: flex;
-          flex-grow: 1;
-          flex-direction: column;
-          font: 400 16px/1.5 Roboto, sans-serif;
-          padding: 15px;
+        display: flex;
+        flex-grow: 1;
+        flex-direction: column;
+        font: 400 16px/1.5 Roboto, sans-serif;
+        padding: 15px;
+        height: 100%;
       }
       .logo-image {
-          /* aspect-ratio: 0.99; */
-          object-fit: contain;
-          width: 150px;
-          align-self: center;
+        /* aspect-ratio: 0.99; */
+        object-fit: contain;
+        width: 150px;
+        align-self: center;
       }
       .system-title {
-          color: #1C7600;
-          font-size: 16px;
-          font-weight: 700;
-          line-height: 20px;
-          text-align: center;
-          text-transform: uppercase;
-          margin-top: 18px;
+        color: #1C7600;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 20px;
+        text-align: center;
+        text-transform: uppercase;
+        margin-top: 18px;
       }
       .nav-tabs {
-          display: flex;
-          margin-top: 10px;
-          /* min-height: 295px; */
-          flex-direction: column;
-          justify-content: center;
+        display: flex;
+        margin-top: 10px;
+        /* min-height: 295px; */
+        flex-direction: column;
+        justify-content: center;
+        gap: 3px;
       }
       .nav-item {
-          border-radius: 10px;
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding: 12px 15px;
-          color: #343434;
-          font-weight: 700;
-          letter-spacing: -0.2px;
-          text-decoration: none;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 15px;
+        color: #343434;
+        font-weight: 700;
+        letter-spacing: -0.2px;
+        text-decoration: none;
+      }      
+      .nav-item.active {
+        background-color: #098100;
+        color: #fff;
       }
       .nav-item:hover {
-        text-decoration: underline;
+        background-color:rgb(11, 158, 0);
+        color: #fff;
       }
-      /* .nav-item.active {
-          background-color: #098100;
-          color: #fff;
-      } */
       .nav-icon {
-          aspect-ratio: 1;
-          object-fit: contain;
-          width: 24px;
+        aspect-ratio: 1;
+        object-fit: contain;
+        width: 24px;
       }
       .user-section {
-          display: flex;
-          margin-top: 50px;
-          /* min-height: 243px; */
-          flex-direction: column;
-          justify-content: center;
+        display: flex;
+        margin-top: 50px;
+        /* min-height: 243px; */
+        flex-direction: column;
+        justify-content: center;
       }
       .user-profile {
-          display: flex;
-          align-items: center;
-          gap: 9px;
-          font-size: 20px;
-          color: #000;
-          letter-spacing: -0.2px;
-          padding: 32px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 20px;
+        color: #000;
+        letter-spacing: -0.2px;
+        padding: 32px;
       }
       .avatar {
-          background-color: #d9d9d9;
-          border-radius: 50%;
-          width: 50px;
-          height: 50px;
+        background-color: #d9d9d9;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
       }
       /* .username { width: 90px; } */
-      .logout-btn {
-          border-radius: 10px;
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding: 12px 15px;
-          color: #343434;
-          text-decoration: none;
-      }
-      .logout-btn:hover {
-        text-decoration: underline;
-      }
       .content-column {
         display: flex;
         flex-direction: column;
@@ -342,7 +338,7 @@ session_start();
                 <img src="res\icons\users.svg" alt="" class="nav-icon" />
                 <span>Class List</span>
               </a>
-              <a href="attendancereport.php" class="nav-item">
+              <a href="attendancereport.php" class="nav-item active">
                 <img src="res\icons\pie-graph.svg" alt="" class="nav-icon" />
                 <span>Student Attendance Report</span>
               </a>
@@ -357,7 +353,7 @@ session_start();
                 <div class="avatar" role="img" aria-label="User avatar"></div>
                 <span class="username"><?php echo $username; ?></span>
               </div>
-              <a class="logout-btn" href="logout.php" target="_parent" style="font-weight: 700;">
+              <a class="nav-item" href="logout.php" target="_parent" style="font-weight: 700;">
                 <img src="res\icons\logout.svg" alt="" class="nav-icon" />
                 Logout
               </a>
@@ -426,6 +422,7 @@ session_start();
           </div>
         </section>
       </div>
+      <div class="bottom-outline"></div>
     </main>
 
     <script>

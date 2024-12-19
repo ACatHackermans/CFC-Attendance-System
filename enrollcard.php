@@ -81,13 +81,19 @@ session_start();
         margin: 0;
         padding: 0;
         width: 100%;
-        min-height: 100vh;
+        overflow: hidden;
+        position: relative;
+      }
+      .bottom-outline {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        box-shadow: 0 0 4px 3px rgb(11, 158, 0);
       }
       .page-wrapper {
         box-sizing: border-box;
         width: 100%;
-        min-height: 100vh; /* Full viewport height */
-        overflow-y: auto; 
         margin: 0;
       }
       .main-layout {
@@ -97,13 +103,13 @@ session_start();
         margin: auto;
       }
       .sidebar-column {
-      display: flex;
-      flex-direction: column;
-      line-height: normal;
-      width: 25%;
-      /* min-width: 250px;
-      max-width: 300px; */
-      background-color: #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        line-height: normal;
+        width: 25%;
+        /* min-width: 250px;
+        max-width: 300px; */
+        background-color: #f0f0f0;
       }
       .sidebar { 
           display: flex;
@@ -111,6 +117,7 @@ session_start();
           flex-direction: column;
           font: 400 16px/1.5 Roboto, sans-serif;
           padding: 15px;
+          height: 100%;
       }
       .logo-image{
           /* aspect-ratio: 0.99; */
@@ -133,6 +140,7 @@ session_start();
           /* min-height: 295px; */
           flex-direction: column;
           justify-content: center;
+          gap: 3px;
       }
       .nav-item {
           border-radius: 10px;
@@ -144,14 +152,15 @@ session_start();
           font-weight: 700;
           letter-spacing: -0.2px;
           text-decoration: none; 
-      }
-      .nav-item:hover {
-        text-decoration: underline;
-      }
-      /* .nav-item.active {
+        }
+      .nav-item.active {
           background-color: #098100;
           color: #fff;
-      } */
+      }
+      .nav-item:hover {
+        background-color: rgb(11, 158, 0);
+          color: #fff;
+      }
       .nav-icon {
           aspect-ratio: 1;
           object-fit: contain;
@@ -180,18 +189,6 @@ session_start();
           height: 50px;
       }
       /* .username { width: 90px; } */
-      .logout-btn {
-          border-radius: 10px;
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding: 12px 15px;
-          color: #343434;
-          text-decoration: none;
-      }
-      .logout-btn:hover {
-        text-decoration: underline;
-      }
       .content-column {
         display: flex;
         flex-direction: column;
@@ -326,7 +323,7 @@ session_start();
         );
         border-image-slice: 1;
         box-shadow: 0 10px 4px rgba(0, 0, 0, 0.25);
-        padding: 10px;
+        padding: 25px 20px;
         font: 400 30px REM, sans-serif;
         width: 25%;
         align-items: center;
@@ -449,7 +446,7 @@ session_start();
                 <img src="res\icons\pie-graph.svg" alt="" class="nav-icon" />
                 <span>Student Attendance Report</span>
               </a>
-              <a href="attendancelogin.php" class="nav-item">
+              <a href="attendancelogin.php" class="nav-item active">
                 <img src="res\icons\card.svg" alt="" class="nav-icon" />
                 <span>Student Attendance Login & NFC Enrollment</span>
               </a>
@@ -460,7 +457,7 @@ session_start();
                 <div class="avatar" role="img" aria-label="User avatar"></div>
                 <span class="username"><?php echo $username; ?></span>
               </div>
-              <a class="logout-btn" href="logout.php" target="_parent" style="font-weight: 700;">
+              <a class="nav-item" href="logout.php" target="_parent" style="font-weight: 700;">
                 <img src="res\icons\logout.svg" alt="" class="nav-icon" />
                 Logout
               </a>
@@ -552,6 +549,7 @@ session_start();
           </div>
         </section>
       </div>
+      <div class="bottom-outline"></div>
     </main>
 
     <script>
