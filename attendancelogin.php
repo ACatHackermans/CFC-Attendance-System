@@ -418,9 +418,9 @@ session_start();
         </aside>
 
         <section class="content-column">
-          <div class="content-wrapper">
-            <header class="page-header">STUDENT ATTENDANCE LOGIN & NFC ENROLLMENT</header>
-            
+          <header class="page-header">STUDENT ATTENDANCE LOGIN & NFC ENROLLMENT</header>
+          
+          <div class="content-wrapper">            
             <div class="controls-section">
               <div class="class-info">
                 Grade: 12 

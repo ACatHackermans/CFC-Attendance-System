@@ -117,7 +117,7 @@
         letter-spacing: 1px;
         text-align: center;
         text-transform: uppercase;
-        margin-top: 20px;
+        margin-top: 15px;
         font: 700 14px/1.5 Roboto, sans-serif;
       }
 

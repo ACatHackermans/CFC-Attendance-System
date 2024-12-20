@@ -45,6 +45,7 @@ session_start();
         margin: 0;
         padding: 0;
         width: 100%;
+        height: 100%;
         position: relative;
       }
       .bottom-outline {
@@ -57,6 +58,7 @@ session_start();
       .page-wrapper {
         box-sizing: border-box;
         width: 100%;
+        height: 100%;
         margin: 0;
       }
       .main-layout {
@@ -70,9 +72,12 @@ session_start();
         flex-direction: column;
         line-height: normal;
         width: 25%;
+        height: 100%;
         /* min-width: 250px;
         max-width: 300px; */
         background-color: #f0f0f0;
+        position: sticky;
+        top: 0;
       }
       .sidebar { 
         display: flex;
@@ -156,8 +161,16 @@ session_start();
         display: flex;
         flex-direction: column;
         width: 100%;
+        overflow: hidden;
+        flex-grow: 1;
+        height: 100%;
+        padding-top: 120px; /* Adjust based on the height of .page-header */
       }
-      .content-wrapper { width: 100%; }
+      .content-wrapper { 
+        width: 100%;
+        overflow-y: auto;
+        flex-grow: 1;
+      }
       .page-header {
         text-shadow: 0 4px 4px rgba(0,0,0,0.25);
         border-radius: 5px;
@@ -170,6 +183,10 @@ session_start();
         color: #fff;
         padding: 47px 31px 16px;
         font: 600 40px/1.3 REM, sans-serif;
+        position: fixed; /* Changed from sticky */
+        z-index: 1000;
+        top: 0;
+        width: 100%; /* Ensure it spans the viewport width */
       }
       .controls-section {
         display: flex;
@@ -362,9 +379,9 @@ session_start();
         </aside>
 
         <section class="content-column">
-          <div class="content-wrapper">
-            <header class="page-header">STUDENT ATTENDANCE REPORTS</header>
-            
+          <header class="page-header">STUDENT ATTENDANCE REPORTS</header>
+
+          <div class="content-wrapper">            
             <div class="controls-section">
               <div class="class-info">
                 Grade: 12 
