@@ -143,23 +143,29 @@ session_start();
           gap: 3px;
       }
       .nav-item {
-          border-radius: 10px;
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding: 12px 15px;
-          color: #343434;
-          font-weight: 700;
-          letter-spacing: -0.2px;
-          text-decoration: none; 
-        }
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 15px;
+        color: #343434;
+        font-weight: 700;
+        letter-spacing: -0.2px;
+        text-decoration: none; 
+      }
       .nav-item.active {
-          background-color: #098100;
-          color: #fff;
+        background-color: #098100;
+        color: #fff;
+      }
+      .nav-item.active .nav-icon {
+        filter: brightness(0) invert(1); /* Turn icon white */
       }
       .nav-item:hover {
-        background-color: rgb(11, 158, 0);
-          color: #fff;
+        background-color:rgb(11, 158, 0);
+        color: #fff;
+      }
+      .nav-item:hover .nav-icon {
+        filter: brightness(0) invert(1); /* Turn icon white */
       }
       .nav-icon {
           aspect-ratio: 1;

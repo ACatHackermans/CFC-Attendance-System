@@ -125,9 +125,15 @@ session_start();
         background-color: #098100;
         color: #fff;
       }
+      .nav-item.active .nav-icon {
+        filter: brightness(0) invert(1); /* Turn icon white */
+      }
       .nav-item:hover {
         background-color:rgb(11, 158, 0);
         color: #fff;
+      }
+      .nav-item:hover .nav-icon {
+        filter: brightness(0) invert(1); /* Turn icon white */
       }
       .nav-icon {
         aspect-ratio: 1;
