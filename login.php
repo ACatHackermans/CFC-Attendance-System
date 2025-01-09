@@ -261,7 +261,7 @@
             </div>
             <input type="submit" class="submit-btn" value="Log In">
             <p id="message"></p>
-            <a href="#" class="auth-link">Forgot password?</a>
+            <a href="forgot_password.php" class="auth-link">Forgot password?</a>
             <a href="register.php" class="auth-link">Create account</a>
           </form>
         </main>
