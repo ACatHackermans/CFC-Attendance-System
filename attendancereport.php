@@ -1,34 +1,68 @@
 <?php 
 session_start();
 
-  require("connection.php");
+require("connection.php");
 
-  if (isset($_SESSION['user_id'])) {
+// Check if we need to run attendance validation (after 5pm)
+$current_time = date('H:i:s');
+$cutoff_time = '17:00:00'; // 5pm cutoff
+$last_check_file = "./res/last_attendance_check.txt";
+$current_date = date('Y-m-d');
+$needs_check = false;
+
+if (file_exists($last_check_file)) {
+    $last_check = file_get_contents($last_check_file);
+    if ($last_check !== $current_date && $current_time >= $cutoff_time) {
+        $needs_check = true;
+    }
+} else {
+    if ($current_time >= $cutoff_time) {
+        $needs_check = true;
+    }
+}
+
+if ($needs_check) {
+    // Call reset_attendance.php via AJAX
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, "http://localhost/CFC-Attendance-System-main/reset_attendance.php");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    
+    // Update last check date
+    file_put_contents($last_check_file, $current_date);
+}
+
+if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 
     $sql = "SELECT username FROM users WHERE user_id = ?";
     $stmt = $con->prepare($sql);
-    $stmt->bind_param("i", $user_id); // Assuming user_id is an integer
+    $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
 
     $username = "";
 
     if ($result->num_rows > 0) {
-        // Fetch the associated field information
         while ($row = $result->fetch_assoc()) {
             $username .= htmlspecialchars($row['username']);
         }
     } else {
-      $username = "No record found.";
+        $username = "No record found.";
     }
 
+    $sql = "SELECT student_num, surname, first_name, status_today, on_time, lates, absences, time_in 
+            FROM attendance_report
+            ORDER BY surname ASC";
+    $result = $con->query($sql);
+
     $stmt->close();
-  } else {
-    // Redirect to login if not logged in yet
+    $con->close();
+} else {
     header("Location: ./login.php");
     die;
-  }
+}
 ?>
 
 <!DOCTYPE html>
@@ -39,6 +73,8 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Attendance Reports - CFCSR Student Attendance Management System</title>
     <link rel="icon" type="image/x-icon" href="./res/img/favicon.ico">
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="./js/search.js"></script>
 
     <style>
       html, body {
@@ -264,37 +300,67 @@ session_start();
         aspect-ratio: 1;
         width: 16px;
       }
+
       .table-container {
-        display: flex;
-        flex-wrap: wrap;
-        margin: 10px;
+        margin: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        background: #fff;
       }
+
       .table-wrapper {
-        display: flex;
-        /* min-height: 682px; */
-        flex-direction: column;
-        flex-grow: 1;
-        flex-basis: 0;
+          width: 100%;
+          overflow-x: auto;
+          border-radius: 8px;
       }
+
       .data-table {
-        border-radius: 4px;
-        /* background-color: #363636; */
-        background-color: #ffffff;
-        border: 1px solid #5b5b5b;
-        color: #000000;
-        font: 600 12px/1.3 Inter, sans-serif;
+          width: 100%;
+          border-collapse: collapse;
+          background-color: #ffffff;
+          color: #000000;
+          font: 500 14px/1.4 Inter, sans-serif;
+          min-width: 1000px; /* Ensures horizontal scroll on smaller screens */
       }
-      .table-row {
-        display: flex;
-        width: 100%;
-        background-color: rgba(255,255,255,0);
+
+      .data-table thead {
+          background: #f8f9fa;
+          position: sticky;
+          top: 0;
       }
-      .table-cell {
-        background-color: rgba(255,255,255,0.002);
-        border: 1px solid #5b5b5b;
-        flex: 1;
-        padding: 10px 12px;
-        /* min-height: 36px; */
+
+      .data-table th {
+          padding: 15px 20px;
+          text-align: left;
+          font-weight: 600;
+          border-bottom: 2px solid #e9ecef;
+          white-space: nowrap;
+      }
+
+      .data-table td {
+          padding: 12px 20px;
+          border-bottom: 1px solid #e9ecef;
+          white-space: nowrap;
+      }
+
+      .data-table tr:hover {
+          background-color: #f8f9fa;
+      }
+
+      /* Width for specific columns */
+      .col-student-num { width: 140px; }
+      .col-name { width: 150px; }
+      .col-status { width: 120px; }
+      .col-count { width: 100px; text-align: center; }
+      .col-time { width: 100px; 
+      }
+      /* Status colors */
+      .status-present { color: #198754; }
+      .status-late { color: #ffc107; }
+      .status-absent { color: #dc3545; }
+      /* Center count columns */
+      .count-cell {
+          text-align: center;
       }
       /* .scroll-track {
         border-radius: 6px;
@@ -403,11 +469,6 @@ session_start();
               </div>
               
               <div class="search-controls">
-                <div class="action-buttons">
-                  <img src="res\icons\filter1.svg" alt="Add" class="nav-icon" />
-                  <img src="res\icons\filter2.svg" alt="Edit" class="nav-icon" />
-                </div>
-                
                 <form class="search-box" role="search">
                   <!-- <label for="search" class="visually-hidden">Search</label> -->
                   <input type="search" id="search" class="search-input" placeholder="Search" />
@@ -415,32 +476,47 @@ session_start();
                 </form>
               </div>
             </div>
-
-            <div class="table-container">
-              <div class="table-wrapper">
-                <table class="data-table" role="grid">
-                  <thead>
-                    <tr class="table-row">
-                      <th class="table-cell">Student Number</th>
-                      <th class="table-cell">Surname</th>
-                      <th class="table-cell">First Name</th>
-                      <th class="table-cell">Present</th>
-                      <th class="table-cell">Lates</th>
-                      <th class="table-cell">Absences</th>
-                      <th class="table-cell">Excused Absences</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="table-row">
-                      <td class="table-cell"></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              
-              <!-- <div class="scroll-track">
-                <div class="scroll-thumb"></div>
-              </div> -->
+            
+              <div class="table-container">
+                <div class="table-wrapper">
+                    <table class="data-table attendance">
+                        <thead>
+                            <tr>
+                                <th class="col-student-num">Student Number</th>
+                                <th class="col-name">Surname</th>
+                                <th class="col-name">First Name</th>
+                                <th class="col-status">Status Today</th>
+                                <th class="col-time">Time In</th>
+                                <th class="col-count">On Time</th>
+                                <th class="col-count">Lates</th>
+                                <th class="col-count">Absences</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                                    // Format the time to be more readable
+                                    $time_in = $row['time_in'] ? date('h:i A', strtotime($row['time_in'])) : '-';
+                                    
+                                    echo "<tr>";
+                                    echo "<td>" . htmlspecialchars($row['student_num']) . "</td>";
+                                    echo "<td>" . htmlspecialchars($row['surname']) . "</td>";
+                                    echo "<td>" . htmlspecialchars($row['first_name']) . "</td>";
+                                    echo "<td class='status-" . strtolower($row['status_today']) . "'>" . htmlspecialchars($row['status_today']) . "</td>";
+                                    echo "<td class='time-cell'>" . $time_in . "</td>";
+                                    echo "<td class='count-cell'>" . htmlspecialchars($row['on_time']) . "</td>";
+                                    echo "<td class='count-cell'>" . htmlspecialchars($row['lates']) . "</td>";
+                                    echo "<td class='count-cell'>" . htmlspecialchars($row['absences']) . "</td>";
+                                    echo "</tr>";
+                                }
+                            } else {
+                                echo "<tr><td colspan='8' style='text-align: center;'>No records found</td></tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
           </div>
         </section>
@@ -479,6 +555,95 @@ session_start();
       // Call the function initially and then every second
       updateDateTime();
       setInterval(updateDateTime, 1000);
+    </script>
+
+    <script>
+      $(document).ready(function() {
+          let searchTimeout;
+          const searchInput = $('.search-input');
+          const tableType = $('table').hasClass('classlist') ? 'classlist' : 'attendance';
+          
+          // Function to update the table content
+          function updateTable(data) {
+              const tbody = $('.data-table tbody');
+              tbody.empty();
+              
+              if (data.length === 0) {
+                  const colSpan = tableType === 'classlist' ? '8' : '8';
+                  tbody.append(`<tr><td colspan="${colSpan}" style="text-align: center;">No records found</td></tr>`);
+                  return;
+              }
+              
+              data.forEach(row => {
+                  let tr = $('<tr>');
+                  
+                  if (tableType === 'classlist') {
+                      tr.append(`
+                          <td>${row.student_num}</td>
+                          <td>${row.surname}</td>
+                          <td>${row.first_name}</td>
+                          <td>${row.birthday}</td>
+                          <td>${row.email}</td>
+                          <td>${row.contact_num}</td>
+                          <td>${row.guardian_name}</td>
+                          <td>${row.guardian_num}</td>
+                      `);
+                  } else {
+                      tr.append(`
+                          <td>${row.student_num}</td>
+                          <td>${row.surname}</td>
+                          <td>${row.first_name}</td>
+                          <td class="status-${row.status_today.toLowerCase()}">${row.status_today}</td>
+                          <td class="time-cell">${row.time_in || '-'}</td>
+                          <td class="count-cell">${row.on_time}</td>
+                          <td class="count-cell">${row.lates}</td>
+                          <td class="count-cell">${row.absences}</td>
+                      `);
+                  }
+                  
+                  tbody.append(tr);
+              });
+          }
+          
+          // Function to perform search
+          function performSearch(searchTerm, sort = '') {
+              $.ajax({
+                  url: 'search_handler.php',
+                  method: 'GET',
+                  data: {
+                      table: tableType,
+                      search: searchTerm,
+                      sort: sort
+                  },
+                  success: function(response) {
+                      updateTable(response);
+                  },
+                  error: function(xhr, status, error) {
+                      console.error('Search error:', error);
+                  }
+              });
+          }
+          
+          // Search input handler with debouncing
+          searchInput.on('input', function() {
+              const searchTerm = $(this).val().trim();
+              
+              clearTimeout(searchTimeout);
+              searchTimeout = setTimeout(() => {
+                  // Check if the input is a sorting keyword
+                  const sortKeywords = ['surname', 'student number', 'time in', 'on time', 'late', 'absent'];
+                  const isSort = sortKeywords.includes(searchTerm.toLowerCase());
+                  
+                  performSearch(isSort ? '' : searchTerm, isSort ? searchTerm : '');
+              }, 300);
+          });
+          
+          // Clear search when X icon is clicked
+          $('.search-icon').click(function() {
+              searchInput.val('');
+              performSearch('');
+          });
+      });
     </script>
   </body>
 </html>    

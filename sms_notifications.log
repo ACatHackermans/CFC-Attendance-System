@@ -1,0 +1,31 @@
+2025-01-09 10:58:37,078 - ERROR - Failed to connect to modem: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-09 10:58:37,078 - ERROR - Failed to connect to modem
+2025-01-09 10:58:41,272 - INFO - Successfully sent SMS to 9612133520
+2025-01-09 11:08:05,084 - ERROR - Failed to connect to modem: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-09 11:08:05,085 - ERROR - Failed to connect to modem
+2025-01-09 11:08:09,690 - INFO - Successfully sent SMS to 9612133520
+2025-01-09 11:18:09,942 - ERROR - Failed to connect to modem: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-09 11:18:09,943 - ERROR - Failed to connect to modem
+2025-01-09 11:18:13,991 - INFO - Successfully sent SMS to +639189072959
+2025-01-09 11:30:47,749 - ERROR - Failed to connect to modem: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-09 11:30:47,749 - ERROR - Failed to connect to modem
+2025-01-09 11:30:51,808 - INFO - Successfully sent SMS to +639189072959
+2025-01-09 11:45:16,435 - INFO - Successfully sent SMS to +639189072959
+2025-01-09 11:45:38,359 - INFO - Successfully sent SMS to +639189072959
+2025-01-09 11:46:27,495 - INFO - Successfully sent SMS to +639189072959
+2025-01-09 16:08:26,303 - ERROR - Failed to connect to modem: could not open port 'COM7': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2025-01-09 16:08:26,303 - ERROR - Failed to connect to modem
+2025-01-09 16:12:46,019 - ERROR - Failed to connect to modem: could not open port 'COM7': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2025-01-09 16:12:46,020 - ERROR - Failed to connect to modem
+2025-01-09 16:13:04,013 - ERROR - Failed to connect to modem: could not open port 'COM7': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2025-01-09 16:13:04,013 - ERROR - Failed to connect to modem
+2025-01-10 04:16:39,569 - ERROR - Failed to connect to modem: could not open port 'COM7': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2025-01-10 04:16:39,569 - ERROR - Failed to connect to modem
+2025-01-12 05:30:28,931 - ERROR - Error sending command: 'utf-8' codec can't decode byte 0xc0 in position 0: invalid start byte
+2025-01-12 05:30:28,931 - ERROR - Failed to initialize modem with command: AT
+2025-01-12 05:30:28,931 - ERROR - Failed to initialize modem
+2025-01-12 05:30:55,256 - ERROR - Failed to send SMS to +639123407016: ['', '>']
+2025-01-12 05:38:11,718 - ERROR - Failed to initialize modem with command: AT
+2025-01-12 05:38:11,718 - ERROR - Failed to initialize modem
+2025-01-12 05:45:05,120 - ERROR - Failed to connect to modem: could not open port 'COM7': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2025-01-12 05:45:05,121 - ERROR - Failed to connect to modem

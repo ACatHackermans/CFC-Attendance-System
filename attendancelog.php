@@ -23,8 +23,8 @@ session_start();
       $username = "No record found.";
     }
 
-    // Query to fetch data from the class_list table
-    $sql = "SELECT student_num, surname, first_name, birthday, email, contact_num, guardian_name, guardian_num FROM class_list";
+    // Query to fetch data from the attendance log table
+    $sql = "SELECT log_id, student_number, surname, name, log_date, time_in, status, guardian_num FROM attendance_log";
     $result = $con->query($sql);
 
     $stmt->close();
