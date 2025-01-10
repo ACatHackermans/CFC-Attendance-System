@@ -431,6 +431,10 @@ if (isset($_SESSION['user_id'])) {
                 <img src="res\icons\pie-graph.svg" alt="" class="nav-icon" />
                 <span>Student Attendance Report</span>
               </a>
+              <a href="attendancelog.php" class="nav-item">
+                <img src="res\icons\pie-graph.svg" alt="" class="nav-icon" />
+                <span>Student Attendance Log History</span>
+              </a>
               <a href="attendancelogin.php" class="nav-item">
                 <img src="res\icons\card.svg" alt="" class="nav-icon" />
                 <span>Student Attendance Login & NFC Enrollment</span>

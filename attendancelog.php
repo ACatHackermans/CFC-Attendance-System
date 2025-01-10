@@ -222,6 +222,24 @@ session_start();
         color: rgb(36, 36, 36);
         font-weight: 700;
       }
+      .datetime-wrapper {
+        border-radius: 6px;
+        display: flex;
+        min-height: 42px;
+        align-items: center;
+        gap: 6px;
+        justify-content: flex-end;
+      }
+      .date-display {
+        border-radius: 6px;
+        background-color: rgba(120, 120, 128, 0.12);
+        padding: 8px 12px;
+        font-family: "SF Pro", sans-serif;
+        font-size: 16px;
+        color: rgba(0, 153, 81, 1);
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
       .search-controls {
         display: flex;
         margin: 0;
@@ -354,13 +372,17 @@ session_start();
                 <img src="res\icons\home.svg" alt="" class="nav-icon" />
                 <span>Home</span>
               </a>
-              <a href="classlist.php" class="nav-item active">
+              <a href="classlist.php" class="nav-item">
                 <img src="res\icons\users.svg" alt="" class="nav-icon" />
                 <span>Class List</span>
               </a>
               <a href="attendancereport.php" class="nav-item">
                 <img src="res\icons\pie-graph.svg" alt="" class="nav-icon" />
                 <span>Student Attendance Report</span>
+              </a>
+              <a href="attendancelog.php" class="nav-item active">
+                <img src="res\icons\pie-graph.svg" alt="" class="nav-icon" />
+                <span>Student Attendance Log History</span>
               </a>
               <a href="attendancelogin.php" class="nav-item">
                 <img src="res\icons\card.svg" alt="" class="nav-icon" />
@@ -382,7 +404,7 @@ session_start();
         </aside>
 
         <section class="content-column">
-          <header class="page-header">CLASS LIST</header>
+          <header class="page-header">STUDENT ATTENDANCE LOG</header>
           
           <div class="content-wrapper">            
             <div class="controls-section">
@@ -392,6 +414,10 @@ session_start();
                 Section: Competitive
                 <br />
                 Strand: STEM
+              </div>
+
+              <div class="datetime-wrapper">
+                <time class="date-display"></time>
               </div>
               
               <div class="search-controls">
@@ -408,13 +434,13 @@ session_start();
                   <table class="data-table classlist" role="grid">
                     <thead>
                       <tr>
+                        <th class="col-id">Log ID</th>
                         <th class="col-student-num">Student Number</th>
                         <th class="col-name">Surname</th>
-                        <th class="col-name">First Name</th>
-                        <th class="col-birthday">Birthday</th>
-                        <th class="col-email">Email</th>
-                        <th class="col-contact">Contact Number</th>
-                        <th class="col-guardian">Guardian First Name</th>
+                        <th class="col-name">Name</th>
+                        <th class="col-date">Log Date</th>
+                        <th class="col-date">Time-in</th>
+                        <th class="col-status">Status</th>
                         <th class="col-contact">Guardian Contact Number</th>
                       </tr>
                     </thead>
@@ -424,13 +450,13 @@ session_start();
                         // Output data for each row
                         while ($row = $result->fetch_assoc()) {
                           echo "<tr>";
-                          echo "<td class='table-cell'>" . htmlspecialchars($row['student_num']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['log_id']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['student_number']) . "</td>";
                           echo "<td class='table-cell'>" . htmlspecialchars($row['surname']) . "</td>";
-                          echo "<td class='table-cell'>" . htmlspecialchars($row['first_name']) . "</td>";
-                          echo "<td class='table-cell'>" . htmlspecialchars($row['birthday']) . "</td>";
-                          echo "<td class='table-cell'>" . htmlspecialchars($row['email']) . "</td>";
-                          echo "<td class='table-cell'>" . htmlspecialchars($row['contact_num']) . "</td>";
-                          echo "<td class='table-cell'>" . htmlspecialchars($row['guardian_name']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['name']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['log_date']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['time_in']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['status']) . "</td>";
                           echo "<td class='table-cell'>" . htmlspecialchars($row['guardian_num']) . "</td>";
                           echo "</tr>";
                         }
@@ -453,92 +479,27 @@ session_start();
     </main>
 
     <script>
-      $(document).ready(function() {
-          let searchTimeout;
-          const searchInput = $('.search-input');
-          const tableType = $('table').hasClass('classlist') ? 'classlist' : 'attendance';
-          
-          // Function to update the table content
-          function updateTable(data) {
-              const tbody = $('.data-table tbody');
-              tbody.empty();
-              
-              if (data.length === 0) {
-                  const colSpan = tableType === 'classlist' ? '8' : '8';
-                  tbody.append(`<tr><td colspan="${colSpan}" style="text-align: center;">No records found</td></tr>`);
-                  return;
-              }
-              
-              data.forEach(row => {
-                  let tr = $('<tr>');
-                  
-                  if (tableType === 'classlist') {
-                      tr.append(`
-                          <td>${row.student_num}</td>
-                          <td>${row.surname}</td>
-                          <td>${row.first_name}</td>
-                          <td>${row.birthday}</td>
-                          <td>${row.email}</td>
-                          <td>${row.contact_num}</td>
-                          <td>${row.guardian_name}</td>
-                          <td>${row.guardian_num}</td>
-                      `);
-                  } else {
-                      tr.append(`
-                          <td>${row.student_num}</td>
-                          <td>${row.surname}</td>
-                          <td>${row.first_name}</td>
-                          <td class="status-${row.status_today.toLowerCase()}">${row.status_today}</td>
-                          <td class="time-cell">${row.time_in || '-'}</td>
-                          <td class="count-cell">${row.on_time}</td>
-                          <td class="count-cell">${row.lates}</td>
-                          <td class="count-cell">${row.absences}</td>
-                      `);
-                  }
-                  
-                  tbody.append(tr);
-              });
-          }
-          
-          // Function to perform search
-          function performSearch(searchTerm, sort = '') {
-              $.ajax({
-                  url: 'search_handler.php',
-                  method: 'GET',
-                  data: {
-                      table: tableType,
-                      search: searchTerm,
-                      sort: sort
-                  },
-                  success: function(response) {
-                      updateTable(response);
-                  },
-                  error: function(xhr, status, error) {
-                      console.error('Search error:', error);
-                  }
-              });
-          }
-          
-          // Search input handler with debouncing
-          searchInput.on('input', function() {
-              const searchTerm = $(this).val().trim();
-              
-              clearTimeout(searchTimeout);
-              searchTimeout = setTimeout(() => {
-                  // Check if the input is a sorting keyword
-                  const sortKeywords = ['student number', 'surname', 'first name', 'birthday', 'bday'];
-                  const isSort = sortKeywords.includes(searchTerm.toLowerCase());
-                  
-                  performSearch(isSort ? '' : searchTerm, isSort ? searchTerm : '');
-              }, 300);
-          });
-          
-          // Clear search when X icon is clicked
-          $('.search-icon').click(function() {
-              searchInput.val('');
-              performSearch('');
-          });
-      });
-    </script>
+      // Function to update dateevery second
+      function updateDate() {
+        const dateDisplay = document.querySelector('.date-display');
+        
+        const currentDate = new Date();
+
+        // Format date as "Nov 19, 2024"
+        const formattedDate = currentDate.toLocaleDateString('en-US', {
+          weekday: 'short', 
+          month: 'short', 
+          day: 'numeric', 
+          year: 'numeric'
+        });
+
+        // Update the date on the page
+        dateDisplay.textContent = formattedDate;
+      }
+
+      // Call the function initially and then every second
+      updateDate();
+      setInterval(updateDateTime, 1000);
+    </script>    
   </body>
 </html>    
