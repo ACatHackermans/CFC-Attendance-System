@@ -240,6 +240,22 @@ session_start();
         text-align: center;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
+      .button {
+      background-color: #009951;
+      border-radius: 8px;
+      padding: 12px;
+      align-items: center;
+      text-decoration: none;
+      color: #f5f5f5;
+      font-family: var(
+        --single-line-body-base-font-family,
+        "Inter-Regular",
+        sans-serif
+      );
+      }
+      .button:hover {
+        background-color: #12a054;
+      }
       .search-controls {
         display: flex;
         margin: 0;
@@ -376,13 +392,9 @@ session_start();
                 <img src="res\icons\users.svg" alt="" class="nav-icon" />
                 <span>Class List</span>
               </a>
-              <a href="attendancereport.php" class="nav-item">
+              <a href="attendancereport.php" class="nav-item active">
                 <img src="res\icons\pie-graph.svg" alt="" class="nav-icon" />
                 <span>Student Attendance Report</span>
-              </a>
-              <a href="attendancelog.php" class="nav-item active">
-                <img src="res\icons\pie-graph.svg" alt="" class="nav-icon" />
-                <span>Student Attendance Log History</span>
               </a>
               <a href="attendancelogin.php" class="nav-item">
                 <img src="res\icons\card.svg" alt="" class="nav-icon" />
@@ -419,6 +431,10 @@ session_start();
               <div class="datetime-wrapper">
                 <time class="date-display"></time>
               </div>
+
+              <a href="attendancereport.php" class="button">
+                <span>Attendance Report</span>
+              </a>
               
               <div class="search-controls">
                 <form class="search-box" role="search">
