@@ -227,7 +227,7 @@ session_start();
       align-items: center;
       flex-wrap: wrap;
       justify-content: space-between;
-      margin: 20px 15px;
+      margin: 15px;
     }
     .class-info {
       width: 300px;
@@ -304,7 +304,7 @@ session_start();
     }
     
     .form-label {
-      /* color: #666; */
+      color: #666;
       font-size: 12px;
       font-weight: 600;
       font-family: Noto Sans, sans-serif;
@@ -462,10 +462,6 @@ session_start();
               <a href="attendancereport.php" class="nav-item">
                 <img src="res\icons\pie-graph.svg" alt="" class="nav-icon" />
                 <span>Student Attendance Report</span>
-              </a>
-              <a href="attendancelog.php" class="nav-item">
-                <img src="res\icons\pie-graph.svg" alt="" class="nav-icon" />
-                <span>Student Attendance Log History</span>
               </a>
               <a href="attendancelogin.php" class="nav-item active">
                 <img src="res\icons\card.svg" alt="" class="nav-icon" />

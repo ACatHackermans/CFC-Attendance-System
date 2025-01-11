@@ -1,31 +1,107 @@
-2025-01-09 10:58:37,078 - ERROR - Failed to connect to modem: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
-2025-01-09 10:58:37,078 - ERROR - Failed to connect to modem
-2025-01-09 10:58:41,272 - INFO - Successfully sent SMS to 9612133520
-2025-01-09 11:08:05,084 - ERROR - Failed to connect to modem: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
-2025-01-09 11:08:05,085 - ERROR - Failed to connect to modem
-2025-01-09 11:08:09,690 - INFO - Successfully sent SMS to 9612133520
-2025-01-09 11:18:09,942 - ERROR - Failed to connect to modem: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
-2025-01-09 11:18:09,943 - ERROR - Failed to connect to modem
-2025-01-09 11:18:13,991 - INFO - Successfully sent SMS to +639189072959
-2025-01-09 11:30:47,749 - ERROR - Failed to connect to modem: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
-2025-01-09 11:30:47,749 - ERROR - Failed to connect to modem
-2025-01-09 11:30:51,808 - INFO - Successfully sent SMS to +639189072959
-2025-01-09 11:45:16,435 - INFO - Successfully sent SMS to +639189072959
-2025-01-09 11:45:38,359 - INFO - Successfully sent SMS to +639189072959
-2025-01-09 11:46:27,495 - INFO - Successfully sent SMS to +639189072959
-2025-01-09 16:08:26,303 - ERROR - Failed to connect to modem: could not open port 'COM7': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
-2025-01-09 16:08:26,303 - ERROR - Failed to connect to modem
-2025-01-09 16:12:46,019 - ERROR - Failed to connect to modem: could not open port 'COM7': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
-2025-01-09 16:12:46,020 - ERROR - Failed to connect to modem
-2025-01-09 16:13:04,013 - ERROR - Failed to connect to modem: could not open port 'COM7': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
-2025-01-09 16:13:04,013 - ERROR - Failed to connect to modem
-2025-01-10 04:16:39,569 - ERROR - Failed to connect to modem: could not open port 'COM7': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
-2025-01-10 04:16:39,569 - ERROR - Failed to connect to modem
-2025-01-12 05:30:28,931 - ERROR - Error sending command: 'utf-8' codec can't decode byte 0xc0 in position 0: invalid start byte
-2025-01-12 05:30:28,931 - ERROR - Failed to initialize modem with command: AT
-2025-01-12 05:30:28,931 - ERROR - Failed to initialize modem
-2025-01-12 05:30:55,256 - ERROR - Failed to send SMS to +639123407016: ['', '>']
-2025-01-12 05:38:11,718 - ERROR - Failed to initialize modem with command: AT
-2025-01-12 05:38:11,718 - ERROR - Failed to initialize modem
-2025-01-12 05:45:05,120 - ERROR - Failed to connect to modem: could not open port 'COM7': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
-2025-01-12 05:45:05,121 - ERROR - Failed to connect to modem
+2025-01-10 17:59:01,718 - INFO - Preparing to send message to +639123407016
+2025-01-10 17:59:01,721 - INFO - Port opened successfully
+2025-01-10 17:59:03,223 - INFO - Command: AT, Response: OK
+2025-01-10 17:59:04,725 - INFO - Command: AT, Response: OK
+2025-01-10 17:59:06,227 - INFO - Command: ATE0, Response: OK
+2025-01-10 17:59:07,729 - INFO - Command: AT+CMGF=1, Response: OK
+2025-01-10 17:59:10,742 - INFO - Sending message to +639123407016
+2025-01-10 17:59:20,192 - INFO - Final response: > 
+> 
+> 
+> 
+> 
++CMGS: 167
+
+OK
+2025-01-10 17:59:20,192 - INFO - Message successfully sent to +639123407016
+2025-01-10 17:59:21,193 - INFO - Port closed
+2025-01-10 17:59:31,329 - INFO - Preparing to send message to +639765468988
+2025-01-10 17:59:31,331 - INFO - Port opened successfully
+2025-01-10 17:59:31,875 - INFO - Preparing to send message to +639123407016
+2025-01-10 17:59:31,875 - WARNING - Port open attempt 1 failed: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-10 17:59:32,833 - INFO - Command: AT, Response: OK
+2025-01-10 17:59:33,876 - WARNING - Port open attempt 2 failed: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-10 17:59:34,334 - INFO - Command: AT, Response: OK
+2025-01-10 17:59:35,836 - INFO - Command: ATE0, Response: OK
+2025-01-10 17:59:35,877 - WARNING - Port open attempt 3 failed: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-10 17:59:35,877 - ERROR - Error sending SMS: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-10 17:59:37,338 - INFO - Command: AT+CMGF=1, Response: OK
+2025-01-10 17:59:40,351 - INFO - Sending message to +639765468988
+2025-01-10 17:59:46,004 - INFO - Preparing to send message to +639765468988
+2025-01-10 17:59:46,004 - WARNING - Port open attempt 1 failed: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-10 17:59:48,005 - WARNING - Port open attempt 2 failed: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-10 17:59:49,595 - INFO - Final response: > 
+> 
+> 
+> 
+> 
++CMGS: 169
+
+OK
+2025-01-10 17:59:49,595 - INFO - Message successfully sent to +639765468988
+2025-01-10 17:59:50,007 - INFO - Port opened successfully
+2025-01-10 17:59:50,596 - INFO - Port closed
+2025-01-10 17:59:51,509 - INFO - Command: AT, Response: OK
+2025-01-10 17:59:53,010 - INFO - Command: AT, Response: OK
+2025-01-10 17:59:54,512 - INFO - Command: ATE0, Response: OK
+2025-01-10 17:59:56,013 - INFO - Command: AT+CMGF=1, Response: OK
+2025-01-10 17:59:59,025 - INFO - Sending message to +639765468988
+2025-01-10 18:00:00,744 - INFO - Preparing to send message to +639760205329
+2025-01-10 18:00:00,744 - WARNING - Port open attempt 1 failed: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-10 18:00:02,101 - INFO - Preparing to send message to +639123407016
+2025-01-10 18:00:02,101 - WARNING - Port open attempt 1 failed: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-10 18:00:02,745 - WARNING - Port open attempt 2 failed: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-10 18:00:04,102 - WARNING - Port open attempt 2 failed: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-10 18:00:04,746 - WARNING - Port open attempt 3 failed: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-10 18:00:04,746 - ERROR - Error sending SMS: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-10 18:00:06,103 - WARNING - Port open attempt 3 failed: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-10 18:00:06,103 - ERROR - Error sending SMS: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-10 18:00:08,772 - INFO - Final response: > 
+> 
+> 
+> 
+> 
++CMGS: 171
+
+OK
+2025-01-10 18:00:08,772 - INFO - Message successfully sent to +639765468988
+2025-01-10 18:00:09,773 - INFO - Port closed
+2025-01-10 18:00:16,264 - INFO - Preparing to send message to +639765468988
+2025-01-10 18:00:16,266 - INFO - Port opened successfully
+2025-01-10 18:00:17,768 - INFO - Command: AT, Response: OK
+2025-01-10 18:00:19,269 - INFO - Command: AT, Response: OK
+2025-01-10 18:00:19,911 - INFO - Preparing to send message to +639760205329
+2025-01-10 18:00:19,911 - WARNING - Port open attempt 1 failed: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-10 18:00:20,771 - INFO - Command: ATE0, Response: OK
+2025-01-10 18:00:21,912 - WARNING - Port open attempt 2 failed: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-10 18:00:22,273 - INFO - Command: AT+CMGF=1, Response: OK
+2025-01-10 18:00:23,912 - WARNING - Port open attempt 3 failed: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-10 18:00:23,912 - ERROR - Error sending SMS: could not open port 'COM7': PermissionError(13, 'Access is denied.', None, 5)
+2025-01-10 18:00:25,284 - INFO - Sending message to +639765468988
+2025-01-10 18:00:34,830 - INFO - Final response: > 
+> 
+> 
+> 
+> 
++CMGS: 173
+
+OK
+2025-01-10 18:00:34,830 - INFO - Message successfully sent to +639765468988
+2025-01-10 18:00:35,831 - INFO - Port closed
+2025-01-10 18:00:46,011 - INFO - Preparing to send message to +639760205329
+2025-01-10 18:00:46,013 - INFO - Port opened successfully
+2025-01-10 18:00:47,515 - INFO - Command: AT, Response: OK
+2025-01-10 18:00:49,016 - INFO - Command: AT, Response: OK
+2025-01-10 18:00:50,517 - INFO - Command: ATE0, Response: OK
+2025-01-10 18:00:52,019 - INFO - Command: AT+CMGF=1, Response: OK
+2025-01-10 18:00:55,030 - INFO - Sending message to +639760205329
+2025-01-10 18:01:04,881 - INFO - Final response: > 
+> 
+> 
+> 
+> 
++CMGS: 175
+
+OK
+2025-01-10 18:01:04,881 - INFO - Message successfully sent to +639760205329
+2025-01-10 18:01:05,883 - INFO - Port closed

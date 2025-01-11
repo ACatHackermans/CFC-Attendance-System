@@ -128,27 +128,12 @@ try {
         $insert_report_stmt->execute();
     }
 
+    // Update last activity time for batch notifications
+    $activity_file = "./res/last_attendance_activity.txt";
+    file_put_contents($activity_file, time());
+
     // Commit transaction
     $con->commit();
-
-    // Prepare student data for notification
-    $student_data = [
-        'guardian_name' => $student['guardian_name'],
-        'student_name' => $student['surname'] . ', ' . $student['first_name'],
-        'time_in' => date('h:i A', strtotime($current_time)),
-        'status' => ucfirst($status),
-        'guardian_num' => $student['guardian_num']
-    ];
-
-    // Send notification asynchronously
-    $ch = curl_init('http://localhost/CFC-Attendance-System-main/send_bulk_notification.php');
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['student_data' => $student_data]));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 1); // Short timeout for async
-    curl_exec($ch);
-    curl_close($ch);
 
     // Return success response with student details
     echo json_encode([

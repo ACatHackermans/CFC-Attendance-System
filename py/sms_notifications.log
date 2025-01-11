@@ -1,3 +1,25 @@
-2025-01-12 05:34:40,579 - ERROR - Failed to send SMS to +639123407016: ['', '>']
-2025-01-12 05:35:01,649 - ERROR - Failed to send SMS to +639123407016: ['', '>']
-2025-01-12 05:40:09,984 - ERROR - Failed to send SMS to +639123407016: ['', '>']
+2025-01-10 17:50:35,039 - INFO - Preparing to send message to +639123456789
+2025-01-10 17:50:35,041 - INFO - Port opened successfully
+2025-01-10 17:50:41,072 - INFO - Command: AT, Response: 
+2025-01-10 17:50:43,573 - INFO - Command: AT, Response: OK
+2025-01-10 17:50:45,075 - INFO - Command: AT, Response: OK
+2025-01-10 17:50:46,577 - INFO - Command: ATE0, Response: OK
+2025-01-10 17:50:48,079 - INFO - Command: AT+CMGF=1, Response: OK
+2025-01-10 17:50:51,092 - INFO - Sending message to +639123456789
+2025-01-10 17:50:54,608 - INFO - Final response: +CMGS: 164
+
+OK
+2025-01-10 17:50:54,609 - INFO - Message successfully sent to +639123456789
+2025-01-10 17:50:55,610 - INFO - Port closed
+2025-01-10 17:51:12,992 - INFO - Preparing to send message to +639765468988
+2025-01-10 17:51:12,995 - INFO - Port opened successfully
+2025-01-10 17:51:14,496 - INFO - Command: AT, Response: OK
+2025-01-10 17:51:15,998 - INFO - Command: AT, Response: OK
+2025-01-10 17:51:17,499 - INFO - Command: ATE0, Response: OK
+2025-01-10 17:51:19,001 - INFO - Command: AT+CMGF=1, Response: OK
+2025-01-10 17:51:22,014 - INFO - Sending message to +639765468988
+2025-01-10 17:51:25,628 - INFO - Final response: +CMGS: 165
+
+OK
+2025-01-10 17:51:25,628 - INFO - Message successfully sent to +639765468988
+2025-01-10 17:51:26,629 - INFO - Port closed

@@ -185,7 +185,7 @@ session_start();
       align-items: center;
       flex-wrap: wrap;
       justify-content: space-between;
-      margin: 20px 15px;
+      margin: 15px;
     }
     .class-info {
       width: 300px;
@@ -405,10 +405,6 @@ session_start();
                 <img src="res\icons\pie-graph.svg" alt="" class="nav-icon" />
                 <span>Student Attendance Report</span>
               </a>
-              <a href="attendancelog.php" class="nav-item">
-                <img src="res\icons\pie-graph.svg" alt="" class="nav-icon" />
-                <span>Student Attendance Log History</span>
-              </a>
               <a href="attendancelogin.php" class="nav-item active">
                 <img src="res\icons\card.svg" alt="" class="nav-icon" />
                 <span>Student Attendance Login & NFC Enrollment</span>
@@ -627,31 +623,30 @@ session_start();
           }
 
           function checkBatchNotifications() {
-            console.log('Checking for batch notifications...');
-              $.ajax({
-                url: 'batch_notifications.php',
-                method: 'GET',
-                success: function(response) {
-                    console.log('Raw response:', response);
-                    try {
-                        if (typeof response === 'string') {
-                            response = JSON.parse(response);
-                        }
-                        console.log('Parsed response:', response);
-                        if (response.success) {
-                            console.log('Batch notifications:', response.message);
-                        }
-                    } catch (e) {
-                        console.error('Error parsing response:', e);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error checking batch notifications:', error);
-                    console.error('Status:', status);
-                    console.error('Response:', xhr.responseText);
-                }
-            });
-          }
+          $.ajax({
+              url: 'batch_notifications.php',
+              method: 'GET',
+              success: function(response) {
+                  if (typeof response === 'string') {
+                      try {
+                          response = JSON.parse(response);
+                      } catch (e) {
+                          console.error('Error parsing response:', e);
+                          return;
+                      }
+                  }
+                  
+                  if (response.success) {
+                      console.log('Batch notifications sent successfully:', response.message);
+                  } else if (response.message !== 'Not enough inactivity time has passed or notifications already sent today') {
+                      console.log('Batch notification status:', response.message);
+                  }
+              },
+              error: function(xhr, status, error) {
+                  console.error('Error checking batch notifications:', error);
+              }
+          });
+      }
 
           setInterval(checkNFC, 1000);
           setInterval(resetDisplay, 5000);

@@ -1,7 +1,4 @@
 <?php
-error_log("Batch notifications script started");
-
-// Save as batch_notifications.php
 header('Content-Type: application/json');
 require("connection.php");
 
@@ -42,38 +39,41 @@ if (file_exists($last_activity_file)) {
 
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
-                    $student_data = [
-                        'guardian_name' => $row['guardian_name'],
-                        'student_name' => $row['surname'] . ', ' . $row['first_name'],
-                        'time_in' => date('h:i A', strtotime($row['time_in'])),
-                        'status' => ucfirst($row['status_today']),
-                        'guardian_num' => $row['guardian_num']
-                    ];
+                    $message = "Good Day " . $row['guardian_name'] . "|" .
+                              "This is to inform you that " . $row['surname'] . ", " . $row['first_name'] . " has checked in at school today.|" .
+                              "Date: " . date('F j, Y') . "|" .
+                              "Time: " . date('h:i A', strtotime($row['time_in'])) . "|" .
+                              "Status: " . ucfirst($row['status_today']) . "|" .
+                              "- CFC School Administration";
 
-                    // Prepare and send message
-                    $message = "Dear {$student_data['guardian_name']}, This is to inform you that {$student_data['student_name']} has checked in at school today.\nDate: " . date('F j, Y') . "\nTime: {$student_data['time_in']}\nStatus: {$student_data['status']}\n\n- CFC School Administration";
+                    // Format phone number
+                    $phone_number = $row['guardian_num'];
+                    if (substr($phone_number, 0, 1) === '0') {
+                        $phone_number = '+63' . substr($phone_number, 1);
+                    } elseif (substr($phone_number, 0, 2) !== '+63') {
+                        $phone_number = '+63' . $phone_number;
+                    }
 
-                    // Send SMS
+                    // Execute SMS script with properly escaped arguments
                     $escaped_message = escapeshellarg($message);
-                    $phone_raw = $student_data['guardian_num'];
-                    $phone_formatted = preg_replace('/^0|\+63/', '', $phone_raw); // Remove leading 0 or +63
-                    $formatted_phone = "+63" . $phone_formatted;
-                    error_log("Original phone: " . $phone_raw);
-                    error_log("Formatted phone: " . $formatted_phone);
-                    $escaped_phone = escapeshellarg($formatted_phone);
-                    $command = "python ./py/smsnotif.py {$escaped_phone} {$escaped_message}";
-                    error_log("Executing command: " . $command);
-                    $output = shell_exec($command);
-                    error_log("Command output: " . $output);
+                    $escaped_phone = escapeshellarg($phone_number);
                     
-                    if (strpos($output, 'Successfully') !== false) {
+                    $command = "python ./py/smsnotif.py {$escaped_phone} {$escaped_message}";
+                    $output = shell_exec($command);
+                    
+                    // Log the attempt
+                    error_log("Sending SMS to {$phone_number} for student {$row['surname']}, {$row['first_name']}");
+                    error_log("Message content: " . $message);
+                    error_log("Command output: {$output}");
+                    
+                    if (stripos($output, 'success') !== false) {
                         $notification_count++;
                     } else {
                         $error_count++;
                     }
 
-                    // Add delay between messages to prevent overloading
-                    sleep(2);
+                    // Add delay between messages to prevent overwhelming the modem
+                    sleep(10);  // 10-second delay between messages
                 }
 
                 // Mark notifications as sent for today
@@ -90,6 +90,7 @@ if (file_exists($last_activity_file)) {
                 ]);
             }
         } catch (Exception $e) {
+            error_log("Batch notification error: " . $e->getMessage());
             echo json_encode([
                 'success' => false,
                 'error' => $e->getMessage()
