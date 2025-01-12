@@ -270,6 +270,22 @@ if (isset($_SESSION['user_id'])) {
         text-align: center;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
+      .button {
+      background-color: #009951;
+      border-radius: 8px;
+      padding: 12px;
+      align-items: center;
+      text-decoration: none;
+      color: #f5f5f5;
+      font-family: var(
+        --single-line-body-base-font-family,
+        "Inter-Regular",
+        sans-serif
+      );
+      }
+      .button:hover {
+        background-color: #12a054;
+      }
       .search-controls {
         display: flex;
         margin: 0;
@@ -467,6 +483,10 @@ if (isset($_SESSION['user_id'])) {
                 <time class="date-display"></time>
                 <time class="time-display"></time>
               </div>
+
+              <a href="attendancehistory.php" class="button">
+                <span>Attendance History</span>
+              </a>
               
               <div class="search-controls">
                 <form class="search-box" role="search">
