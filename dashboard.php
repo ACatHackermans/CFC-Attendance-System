@@ -432,13 +432,15 @@ $attendance_percentage = $total_students > 0 ? round(($ontime_count / $total_stu
       }
 
       .status-column.status-ontime,
-      .status-column.status-late {
-          background: linear-gradient(147.59deg, rgba(149, 196, 148, 1) 0%, rgba(252, 238, 28, 1) 100%);
+      .status-column.status-late,
+      .status-column.status-absent {
+        /* background: linear-gradient(147.59deg, rgba(149, 196, 148, 1) 0%, rgba(252, 238, 28, 1) 100%); */
+        background: linear-gradient(147.59deg, rgba(149, 196, 148, 0.3) 0%, rgba(252, 238, 28, 0.3) 100%);  
       }
 
-      .status-column.status-absent {
+      /* .status-column.status-absent {
           background-color: #e3e3e3;
-      }
+      } */
 
       .status-list {
           margin-top: 10px;

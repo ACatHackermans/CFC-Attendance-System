@@ -185,7 +185,7 @@ session_start();
       align-items: center;
       flex-wrap: wrap;
       justify-content: space-between;
-      margin: 15px;
+      margin: 20px 15px;
     }
     .class-info {
       width: 300px;

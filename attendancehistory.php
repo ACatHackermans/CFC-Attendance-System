@@ -42,7 +42,7 @@ session_start();
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Class List - CFCSR Student Attendance Management System</title>
+    <title>Attendance History - CFCSR Student Attendance Management System</title>
     <link rel="icon" type="image/x-icon" href="./res/img/favicon.ico">
     <script src="./js/jquery-3.7.1.min.js"></script>
     <script src="./js/search.js"></script>
