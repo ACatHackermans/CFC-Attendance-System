@@ -124,7 +124,7 @@ session_start();
         flex-direction: column;
         font: 400 16px/1.5 Roboto, sans-serif;
         padding: 15px;
-        height: 100%;
+        height: 100vh;
     }
     .logo-image{
         /* aspect-ratio: 0.99; */
@@ -337,7 +337,7 @@ session_start();
       border-image-slice: 1;
       box-shadow: 0 10px 4px rgba(0, 0, 0, 0.25);
       padding: 25px 20px;
-      font: 400 30px REM, sans-serif;
+      font: 400 25px REM, sans-serif;
       width: 25%;
       align-items: center;
       display: flex;

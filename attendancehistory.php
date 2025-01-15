@@ -1,68 +1,39 @@
 <?php 
 session_start();
 
-require("connection.php");
+  require("connection.php");
 
-// Check if we need to run attendance validation (after 5pm)
-$current_time = date('H:i:s');
-$cutoff_time = '17:00:00'; // 5pm cutoff
-$last_check_file = "./res/last_attendance_check.txt";
-$current_date = date('Y-m-d');
-$needs_check = false;
-
-if (file_exists($last_check_file)) {
-    $last_check = file_get_contents($last_check_file);
-    if ($last_check !== $current_date && $current_time >= $cutoff_time) {
-        $needs_check = true;
-    }
-} else {
-    if ($current_time >= $cutoff_time) {
-        $needs_check = true;
-    }
-}
-
-if ($needs_check) {
-    // Call reset_attendance.php via AJAX
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, "http://localhost/CFC-Attendance-System-main/reset_attendance.php");
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($ch);
-    curl_close($ch);
-    
-    // Update last check date
-    file_put_contents($last_check_file, $current_date);
-}
-
-if (isset($_SESSION['user_id'])) {
+  if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 
     $sql = "SELECT username FROM users WHERE user_id = ?";
     $stmt = $con->prepare($sql);
-    $stmt->bind_param("i", $user_id);
+    $stmt->bind_param("i", $user_id); // Assuming user_id is an integer
     $stmt->execute();
     $result = $stmt->get_result();
 
     $username = "";
 
     if ($result->num_rows > 0) {
+        // Fetch the associated field information
         while ($row = $result->fetch_assoc()) {
             $username .= htmlspecialchars($row['username']);
         }
     } else {
-        $username = "No record found.";
+      $username = "No record found.";
     }
 
-    $sql = "SELECT student_num, surname, first_name, status_today, on_time, lates, absences, time_in 
-            FROM attendance_report
-            ORDER BY surname ASC";
+    // Query to fetch data from the attendance log table
+    $sql = "SELECT log_id, student_number, surname, name, log_date, time_in, status, guardian_num FROM attendance_log";
     $result = $con->query($sql);
 
     $stmt->close();
     $con->close();
-} else {
+  } else {
+    // Redirect to login if not logged in yet
     header("Location: ./login.php");
     die;
-}
+  }
 ?>
 
 <!DOCTYPE html>
@@ -71,7 +42,7 @@ if (isset($_SESSION['user_id'])) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Attendance Reports - CFCSR Student Attendance Management System</title>
+    <title>Student Attendance Log History - CFCSR Student Attendance Management System</title>
     <link rel="icon" type="image/x-icon" href="./res/img/favicon.ico">
     <script src="./js/jquery-3.7.1.min.js"></script>
     <script src="./js/search.js"></script>
@@ -156,7 +127,7 @@ if (isset($_SESSION['user_id'])) {
         font-weight: 700;
         letter-spacing: -0.2px;
         text-decoration: none;
-      }      
+      }
       .nav-item.active {
         background-color: #098100;
         color: #fff;
@@ -251,7 +222,7 @@ if (isset($_SESSION['user_id'])) {
         color: rgb(36, 36, 36);
         font-weight: 700;
       }
-      .datetime-wrapper {
+      /* .datetime-wrapper {
         border-radius: 6px;
         display: flex;
         min-height: 42px;
@@ -259,8 +230,7 @@ if (isset($_SESSION['user_id'])) {
         gap: 6px;
         justify-content: flex-end;
       }
-      .date-display,
-      .time-display {
+      .date-display {
         border-radius: 6px;
         background-color: rgba(120, 120, 128, 0.12);
         padding: 8px 12px;
@@ -269,7 +239,7 @@ if (isset($_SESSION['user_id'])) {
         color: rgba(0, 153, 81, 1);
         text-align: center;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
+      } */
       .button {
       background-color: #009951;
       border-radius: 8px;
@@ -316,68 +286,52 @@ if (isset($_SESSION['user_id'])) {
         aspect-ratio: 1;
         width: 16px;
       }
-
       .table-container {
         margin: 20px;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         background: #fff;
       }
-
       .table-wrapper {
-          width: 100%;
-          overflow-x: auto;
-          border-radius: 8px;
+        width: 100%;
+        overflow-x: auto;
+        border-radius: 8px;
       }
-
       .data-table {
-          width: 100%;
-          border-collapse: collapse;
-          background-color: #ffffff;
-          color: #000000;
-          font: 500 14px/1.4 Inter, sans-serif;
-          min-width: 1000px; /* Ensures horizontal scroll on smaller screens */
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #ffffff;
+        color: #000000;
+        font: 500 14px/1.4 Inter, sans-serif;
+        min-width: 1200px; /* Ensures horizontal scroll on smaller screens */
       }
-
       .data-table thead {
-          background: #f8f9fa;
-          position: sticky;
-          top: 0;
+        background: #f8f9fa;
+        position: sticky;
+        top: 0;
       }
-
       .data-table th {
-          padding: 15px 20px;
-          text-align: left;
-          font-weight: 600;
-          border-bottom: 2px solid #e9ecef;
-          white-space: nowrap;
+        padding: 15px 20px;
+        text-align: left;
+        font-weight: 600;
+        border-bottom: 2px solid #e9ecef;
+        white-space: nowrap;
       }
-
       .data-table td {
-          padding: 12px 20px;
-          border-bottom: 1px solid #e9ecef;
-          white-space: nowrap;
+        padding: 12px 20px;
+        border-bottom: 1px solid #e9ecef;
+        white-space: nowrap;
       }
-
       .data-table tr:hover {
-          background-color: #f8f9fa;
+        background-color: #f8f9fa;
       }
-
       /* Width for specific columns */
-      .col-student-num { width: 140px; }
+      .col-student-num { width: 120px; }
       .col-name { width: 150px; }
-      .col-status { width: 120px; }
-      .col-count { width: 100px; text-align: center; }
-      .col-time { width: 100px; 
-      }
-      /* Status colors */
-      .status-present { color: #198754; }
-      .status-late { color: #ffc107; }
-      .status-absent { color: #dc3545; }
-      /* Center count columns */
-      .count-cell {
-          text-align: center;
-      }
+      .col-birthday { width: 100px; }
+      .col-email { width: 200px; }
+      .col-contact { width: 120px; }
+      .col-guardian { width: 150px; }
       /* .scroll-track {
         border-radius: 6px;
         background-color: #e2e2e2;
@@ -390,7 +344,7 @@ if (isset($_SESSION['user_id'])) {
         background-color: #c4c4c4;
         height: 73px;
       } */
-      
+
       @media (max-width: 991px) {
         .main-layout { 
           flex-direction: column;
@@ -417,11 +371,6 @@ if (isset($_SESSION['user_id'])) {
           padding-bottom: 100px;
           margin-top: 40px;
         } */
-
-        .date-year,
-        .time-display {
-          color: rgba(0, 153, 81, 1);
-        }
       }
     </style>
   </head>
@@ -467,8 +416,8 @@ if (isset($_SESSION['user_id'])) {
         </aside>
 
         <section class="content-column">
-          <header class="page-header">STUDENT ATTENDANCE REPORTS</header>
-
+          <header class="page-header">STUDENT ATTENDANCE LOG HISTORY</header>
+          
           <div class="content-wrapper">            
             <div class="controls-section">
               <div class="class-info">
@@ -479,13 +428,12 @@ if (isset($_SESSION['user_id'])) {
                 Strand: STEM
               </div>
 
-              <div class="datetime-wrapper">
+              <!-- <div class="datetime-wrapper">
                 <time class="date-display"></time>
-                <time class="time-display"></time>
-              </div>
+              </div> -->
 
-              <a href="attendancehistory.php" class="button">
-                <span>Attendance History</span>
+              <a href="attendancereport.php" class="button">
+                <span>Attendance Report</span>
               </a>
               
               <div class="search-controls">
@@ -496,47 +444,49 @@ if (isset($_SESSION['user_id'])) {
                 </form>
               </div>
             </div>
-            
-              <div class="table-container">
-                <div class="table-wrapper">
-                    <table class="data-table attendance">
-                        <thead>
-                            <tr>
-                                <th class="col-student-num">Student Number</th>
-                                <th class="col-name">Surname</th>
-                                <th class="col-name">First Name</th>
-                                <th class="col-status">Status Today</th>
-                                <th class="col-time">Time In</th>
-                                <th class="col-count">On Time</th>
-                                <th class="col-count">Lates</th>
-                                <th class="col-count">Absences</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            if ($result->num_rows > 0) {
-                                while ($row = $result->fetch_assoc()) {
-                                    // Format the time to be more readable
-                                    $time_in = $row['time_in'] ? date('h:i A', strtotime($row['time_in'])) : '-';
-                                    
-                                    echo "<tr>";
-                                    echo "<td>" . htmlspecialchars($row['student_num']) . "</td>";
-                                    echo "<td>" . htmlspecialchars($row['surname']) . "</td>";
-                                    echo "<td>" . htmlspecialchars($row['first_name']) . "</td>";
-                                    echo "<td class='status-" . strtolower($row['status_today']) . "'>" . htmlspecialchars($row['status_today']) . "</td>";
-                                    echo "<td class='time-cell'>" . $time_in . "</td>";
-                                    echo "<td class='count-cell'>" . htmlspecialchars($row['on_time']) . "</td>";
-                                    echo "<td class='count-cell'>" . htmlspecialchars($row['lates']) . "</td>";
-                                    echo "<td class='count-cell'>" . htmlspecialchars($row['absences']) . "</td>";
-                                    echo "</tr>";
-                                }
-                            } else {
-                                echo "<tr><td colspan='8' style='text-align: center;'>No records found</td></tr>";
-                            }
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
+
+            <div class="table-container">
+              <div class="table-wrapper">
+                  <table class="data-table classlist" role="grid">
+                    <thead>
+                      <tr>
+                        <th class="col-id">Log ID</th>
+                        <th class="col-student-num">Student Number</th>
+                        <th class="col-name">Surname</th>
+                        <th class="col-name">Name</th>
+                        <th class="col-date">Log Date</th>
+                        <th class="col-date">Time-in</th>
+                        <th class="col-status">Status</th>
+                        <th class="col-contact">Guardian Contact Number</th>
+                      </tr>
+                    </thead>
+                  <tbody>
+                    <?php
+                      if ($result->num_rows > 0) {
+                        // Output data for each row
+                        while ($row = $result->fetch_assoc()) {
+                          echo "<tr>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['log_id']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['student_number']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['surname']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['name']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['log_date']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['time_in']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['status']) . "</td>";
+                          echo "<td class='table-cell'>" . htmlspecialchars($row['guardian_num']) . "</td>";
+                          echo "</tr>";
+                        }
+                      } else {
+                        echo "<tr><td colspan='8' class='table-cell'>No records found</td></tr>";
+                      }
+                    ?>
+                  </tbody>
+                </table>
+              </div>
+              
+              <!-- <div class="scroll-track">
+                <div class="scroll-thumb"></div>
+              </div> -->
             </div>
           </div>
         </section>
@@ -545,10 +495,9 @@ if (isset($_SESSION['user_id'])) {
     </main>
 
     <script>
-      // Function to update date and time every second
-      function updateDateTime() {
+      // Function to update dateevery second
+      function updateDate() {
         const dateDisplay = document.querySelector('.date-display');
-        const timeDisplay = document.querySelector('.time-display');
         
         const currentDate = new Date();
 
@@ -559,24 +508,16 @@ if (isset($_SESSION['user_id'])) {
           day: 'numeric', 
           year: 'numeric'
         });
-        
-        // Format time as "9:41 AM"
-        const formattedTime = currentDate.toLocaleTimeString('en-US', {
-          hour: 'numeric', 
-          minute: 'numeric', 
-          hour12: true
-        });
 
-        // Update the time and date on the page
+        // Update the date on the page
         dateDisplay.textContent = formattedDate;
-        timeDisplay.textContent = formattedTime;
       }
 
       // Call the function initially and then every second
-      updateDateTime();
+      updateDate();
       setInterval(updateDateTime, 1000);
-    </script>
-
+    </script>   
+    
     <script>
       $(document).ready(function() {
           let searchTimeout;
