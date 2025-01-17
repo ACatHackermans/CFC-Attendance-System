@@ -42,7 +42,7 @@ session_start();
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Attendance History - CFCSR Student Attendance Management System</title>
+    <title>Student Attendance Log History - CFCSR Student Attendance Management System</title>
     <link rel="icon" type="image/x-icon" href="./res/img/favicon.ico">
     <script src="./js/jquery-3.7.1.min.js"></script>
     <script src="./js/search.js"></script>
@@ -92,7 +92,7 @@ session_start();
         flex-direction: column;
         font: 400 16px/1.5 Roboto, sans-serif;
         padding: 15px;
-        height: 100%;
+        height: 100vh;
       }
       .logo-image {
         /* aspect-ratio: 0.99; */
@@ -222,7 +222,7 @@ session_start();
         color: rgb(36, 36, 36);
         font-weight: 700;
       }
-      .datetime-wrapper {
+      /* .datetime-wrapper {
         border-radius: 6px;
         display: flex;
         min-height: 42px;
@@ -239,7 +239,7 @@ session_start();
         color: rgba(0, 153, 81, 1);
         text-align: center;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
+      } */
       .button {
       background-color: #009951;
       border-radius: 8px;
@@ -416,7 +416,7 @@ session_start();
         </aside>
 
         <section class="content-column">
-          <header class="page-header">STUDENT ATTENDANCE LOG</header>
+          <header class="page-header">STUDENT ATTENDANCE LOG HISTORY</header>
           
           <div class="content-wrapper">            
             <div class="controls-section">
@@ -428,9 +428,9 @@ session_start();
                 Strand: STEM
               </div>
 
-              <div class="datetime-wrapper">
+              <!-- <div class="datetime-wrapper">
                 <time class="date-display"></time>
-              </div>
+              </div> -->
 
               <a href="attendancereport.php" class="button">
                 <span>Attendance Report</span>
@@ -516,6 +516,95 @@ session_start();
       // Call the function initially and then every second
       updateDate();
       setInterval(updateDateTime, 1000);
-    </script>    
+    </script>   
+    
+    <script>
+      $(document).ready(function() {
+          let searchTimeout;
+          const searchInput = $('.search-input');
+          const tableType = $('table').hasClass('classlist') ? 'classlist' : 'attendance';
+          
+          // Function to update the table content
+          function updateTable(data) {
+              const tbody = $('.data-table tbody');
+              tbody.empty();
+              
+              if (data.length === 0) {
+                  const colSpan = tableType === 'classlist' ? '8' : '8';
+                  tbody.append(`<tr><td colspan="${colSpan}" style="text-align: center;">No records found</td></tr>`);
+                  return;
+              }
+              
+              data.forEach(row => {
+                  let tr = $('<tr>');
+                  
+                  if (tableType === 'classlist') {
+                      tr.append(`
+                          <td>${row.student_num}</td>
+                          <td>${row.surname}</td>
+                          <td>${row.first_name}</td>
+                          <td>${row.birthday}</td>
+                          <td>${row.email}</td>
+                          <td>${row.contact_num}</td>
+                          <td>${row.guardian_name}</td>
+                          <td>${row.guardian_num}</td>
+                      `);
+                  } else {
+                      tr.append(`
+                          <td>${row.student_num}</td>
+                          <td>${row.surname}</td>
+                          <td>${row.first_name}</td>
+                          <td class="status-${row.status_today.toLowerCase()}">${row.status_today}</td>
+                          <td class="time-cell">${row.time_in || '-'}</td>
+                          <td class="count-cell">${row.on_time}</td>
+                          <td class="count-cell">${row.lates}</td>
+                          <td class="count-cell">${row.absences}</td>
+                      `);
+                  }
+                  
+                  tbody.append(tr);
+              });
+          }
+          
+          // Function to perform search
+          function performSearch(searchTerm, sort = '') {
+              $.ajax({
+                  url: 'search_handler.php',
+                  method: 'GET',
+                  data: {
+                      table: tableType,
+                      search: searchTerm,
+                      sort: sort
+                  },
+                  success: function(response) {
+                      updateTable(response);
+                  },
+                  error: function(xhr, status, error) {
+                      console.error('Search error:', error);
+                  }
+              });
+          }
+          
+          // Search input handler with debouncing
+          searchInput.on('input', function() {
+              const searchTerm = $(this).val().trim();
+              
+              clearTimeout(searchTimeout);
+              searchTimeout = setTimeout(() => {
+                  // Check if the input is a sorting keyword
+                  const sortKeywords = ['surname', 'student number', 'time in', 'on time', 'late', 'absent'];
+                  const isSort = sortKeywords.includes(searchTerm.toLowerCase());
+                  
+                  performSearch(isSort ? '' : searchTerm, isSort ? searchTerm : '');
+              }, 300);
+          });
+          
+          // Clear search when X icon is clicked
+          $('.search-icon').click(function() {
+              searchInput.val('');
+              performSearch('');
+          });
+      });
+    </script>
   </body>
 </html>    

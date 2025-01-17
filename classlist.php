@@ -92,7 +92,7 @@ session_start();
         flex-direction: column;
         font: 400 16px/1.5 Roboto, sans-serif;
         padding: 15px;
-        height: 100%;
+        height: 100vh;
       }
       .logo-image {
         /* aspect-ratio: 0.99; */

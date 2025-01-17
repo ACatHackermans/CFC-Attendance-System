@@ -123,7 +123,7 @@ $attendance_percentage = $total_students > 0 ? round(($ontime_count / $total_stu
           flex-direction: column;
           font: 400 16px/1.5 Roboto, sans-serif;
           padding: 15px;
-          height: 100%;
+          height: 100vh;
       }
 
       .logo-image {
@@ -361,6 +361,7 @@ $attendance_percentage = $total_students > 0 ? round(($ontime_count / $total_stu
           border-radius: 6px;
           box-shadow: 0 10px 4px rgba(0, 0, 0, 0.25);
           border: 1px solid #fff;
+          font-family: "Rem-Regular", sans-serif;
       }
 
       .attendance-section {
@@ -434,8 +435,8 @@ $attendance_percentage = $total_students > 0 ? round(($ontime_count / $total_stu
       .status-column.status-ontime,
       .status-column.status-late,
       .status-column.status-absent {
-        /* background: linear-gradient(147.59deg, rgba(149, 196, 148, 1) 0%, rgba(252, 238, 28, 1) 100%); */
-        background: linear-gradient(147.59deg, rgba(149, 196, 148, 0.3) 0%, rgba(252, 238, 28, 0.3) 100%);  
+          /* background: linear-gradient(147.59deg, rgba(149, 196, 148, 1) 0%, rgba(252, 238, 28, 1) 100%); */
+          background: linear-gradient(147.59deg, rgba(149, 196, 148, 0.3) 0%, rgba(252, 238, 28, 0.3) 100%);
       }
 
       /* .status-column.status-absent {

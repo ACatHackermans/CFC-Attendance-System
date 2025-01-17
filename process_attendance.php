@@ -1,24 +1,21 @@
 <?php
 header('Content-Type: application/json');
 require("connection.php");
-
-// Get the raw POST data
-$json_str = file_get_contents('php://input');
-$data = json_decode($json_str, true);
-
-if (!isset($data['uid'])) {
-    echo json_encode([
-        'success' => false,
-        'error' => 'No UID provided'
-    ]);
-    exit;
-}
-
-$nfc_uid = $data['uid'];
+require_once("twilio_sms.php");
 
 try {
     // Start transaction
     $con->begin_transaction();
+
+    // Get the raw POST data
+    $json_str = file_get_contents('php://input');
+    $data = json_decode($json_str, true);
+
+    if (!isset($data['uid'])) {
+        throw new Exception('No UID provided');
+    }
+
+    $nfc_uid = $data['uid'];
 
     // Get student details from class_list
     $stmt = $con->prepare("SELECT student_num, surname, first_name, guardian_num, guardian_name FROM class_list WHERE nfc_uid = ?");
@@ -128,6 +125,15 @@ try {
         $insert_report_stmt->execute();
     }
 
+    $formattedTime = date('h:i A', strtotime($current_time));
+    $formattedDate = date('F j, Y');
+    $message = "Dear {$student['guardian_name']},\n";
+    $message .= "This is to inform you that {$student['surname']}, {$student['first_name']} has arrived at school today, {$formattedDate}, at {$formattedTime}.\n\n";
+    $message .= "- CFC Admin";
+
+    $phone = '+63' . ltrim($student['guardian_num'], '0');
+    sendSMS($phone, $message);
+
     // Update last activity time for batch notifications
     $activity_file = "./res/last_attendance_activity.txt";
     file_put_contents($activity_file, time());
@@ -141,7 +147,7 @@ try {
         'student' => [
             'surname' => $student['surname'],
             'first_name' => $student['first_name'],
-            'time_in' => date('h:i A', strtotime($current_time)),
+            'time_in' => $formattedTime,
             'status' => ucfirst($status),
             'attendance_summary' => [
                 'on_time' => $on_time,
