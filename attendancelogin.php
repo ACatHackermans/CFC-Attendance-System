@@ -543,62 +543,71 @@ session_start();
           }
 
           async function processAttendance(uid) {
-              try {
-                  const response = await $.ajax({
-                      url: 'process_attendance.php',
-                      method: 'POST',
-                      contentType: 'application/json',
-                      data: JSON.stringify({ uid: uid }),
-                      dataType: 'json'
-                  });
+            try {
+                const response = await $.ajax({
+                    url: 'process_attendance.php',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ uid: uid }),
+                    dataType: 'json'
+                });
 
-                  if (response.success) {
-                      updateAttendanceDisplay(response.student);
-                      $('.nfc-section').html(`
-                          <img src="res/icons/NFC.svg" alt="NFC icon" class="NFC-icon" />
-                          <div style="text-align: center; color: #009951;">
-                              Attendance recorded successfully!<br>
-                              Please tap NFC-enabled card on the NFC reader to take attendance...
-                          </div>
-                      `);
-                  } else {
-                      throw new Error(response.error || 'Failed to record attendance');
-                  }
-              } catch (error) {
-                  console.error('Error processing attendance:', error);
-                  $('.nfc-section').html(`
-                      <img src="res/icons/NFC.svg" alt="NFC icon" class="NFC-icon" />
-                      <div style="text-align: center; color: #FF0000;">
-                          ${error.message || 'Error recording attendance'}<br>
-                          Please tap NFC-enabled card on the NFC reader to take attendance...
-                      </div>
-                  `);
-                  
-                  $('.loggingin-container').html(`
-                      <div class="student-avatar" role="img" aria-label="Student Profile"></div>
-                      <div style="line-height: 40px;">
-                          <b>Error</b>
-                          <br />
-                          Time In: --:--
-                          <br />
-                          Status: ---
-                      </div>
-                  `);
-              }
-          }
+                if (response.success) {
+                    // Update attendance display
+                    updateAttendanceDisplay(response.student);
+                    
+                    // Show success message in NFC section
+                    $('.nfc-section').html(`
+                        <img src="res/icons/NFC.svg" alt="NFC icon" class="NFC-icon" />
+                        <div style="text-align: center; color: #009951;">
+                        <br>
+                        <br>
+                            Attendance recorded successfully!
+                        <br>
+                        </div>
+                    `);
+                } else {
+                    throw new Error(response.error || 'Failed to record attendance');
+                }
+            } catch (error) {
+                console.error('Error processing attendance:', error);
+                
+                // Show error message in NFC section
+                $('.nfc-section').html(`
+                    <img src="res/icons/NFC.svg" alt="NFC icon" class="NFC-icon" />
+                    <div style="text-align: center; color: #FF0000;">
+                        ${error.message || 'Error recording attendance'}<br>
+                        Please tap NFC-enabled card on the NFC reader to take attendance...
+                    </div>
+                `);
+                
+                // Reset attendance display
+                $('.loggingin-container').html(`
+                    <div class="student-avatar" role="img" aria-label="Student Profile"></div>
+                    <div style="line-height: 40px;">
+                        <b>Surname, Name</b>
+                        <br />
+                        Time In: --:--
+                        <br />
+                        Status: ---
+                    </div>
+                `);
+            }
+        }
 
-          function updateAttendanceDisplay(student) {
-              $('.loggingin-container').html(`
-                  <div class="student-avatar" role="img" aria-label="Student Profile"></div>
-                  <div style="line-height: 40px;">
-                      <b>${student.surname}, ${student.first_name}</b>
-                      <br />
-                      Time In: ${student.time_in}
-                      <br />
-                      Status: ${student.status}
-                  </div>
-              `);
-          }
+        // Function to update the attendance display
+        function updateAttendanceDisplay(student) {
+            $('.loggingin-container').html(`
+                <div class="student-avatar" role="img" aria-label="Student Profile"></div>
+                <div style="line-height: 40px;">
+                    <b>${student.surname}, ${student.first_name}</b>
+                    <br />
+                    Time In: ${student.time_in}
+                    <br />
+                    Status: ${student.status}
+                </div>
+            `);
+        }
 
           // Reset display after 10 seconds of no new scans
           function resetDisplay() {
@@ -622,35 +631,8 @@ session_start();
               }
           }
 
-          function checkBatchNotifications() {
-          $.ajax({
-              url: 'batch_notifications.php',
-              method: 'GET',
-              success: function(response) {
-                  if (typeof response === 'string') {
-                      try {
-                          response = JSON.parse(response);
-                      } catch (e) {
-                          console.error('Error parsing response:', e);
-                          return;
-                      }
-                  }
-                  
-                  if (response.success) {
-                      console.log('Batch notifications sent successfully:', response.message);
-                  } else if (response.message !== 'Not enough inactivity time has passed or notifications already sent today') {
-                      console.log('Batch notification status:', response.message);
-                  }
-              },
-              error: function(xhr, status, error) {
-                  console.error('Error checking batch notifications:', error);
-              }
-          });
-      }
-
           setInterval(checkNFC, 1000);
           setInterval(resetDisplay, 5000);
-          setInterval(checkBatchNotifications, 10000);
       });
     </script>
   </body>

@@ -1,33 +1,32 @@
 <?php
 require_once 'vendor/autoload.php';
-
 use Twilio\Rest\Client;
 
 function sendSMS($to, $message) {
-
-    $SMS_ENABLED = false;
+    // Set this to false to disable SMS sending
+    $SMS_ENABLED = true;
     
     if (!$SMS_ENABLED) {
-        return;
+        return ['success' => false, 'message' => 'SMS sending disabled'];
     }
 
     $accountSid = 'ACab9d41378d20a1d479c75176bfe07689';
-    $authToken = '11836789c896fb2c05f40d50bb518ae7';
+    $authToken = '991b3ef50da1280e97d5522ae4741b48';
     $twilioNumber = '+15077135788';
 
     $client = new Client($accountSid, $authToken);
 
     try {
         $client->messages->create(
-            $to,
+            $to, // Recipient's phone number
             [
                 'from' => $twilioNumber,
                 'body' => $message,
             ]
         );
-        echo "Message sent successfully to $to.";
+        return ['success' => true, 'message' => "Message sent successfully to $to"];
     } catch (Exception $e) {
-        echo "Failed to send message: " . $e->getMessage();
+        return ['success' => false, 'message' => "Failed to send message: " . $e->getMessage()];
     }
 }
 ?>

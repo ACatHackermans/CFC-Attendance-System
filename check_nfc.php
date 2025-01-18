@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
             echo json_encode([
                 'uid' => $nfc_data['uid'],
                 'isRegistered' => true,
-                'surname' => $student['surname']
+                'surname' => $student['surname'],
             ]);
         } else {
             echo json_encode([
