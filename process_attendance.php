@@ -125,14 +125,16 @@ try {
         $insert_report_stmt->execute();
     }
 
+    // Prepare and send SMS notification
     $formattedTime = date('h:i A', strtotime($current_time));
     $formattedDate = date('F j, Y');
     $message = "Dear {$student['guardian_name']},\n";
     $message .= "This is to inform you that {$student['surname']}, {$student['first_name']} has arrived at school today, {$formattedDate}, at {$formattedTime}.\n\n";
     $message .= "- CFC Admin";
 
+    // Format phone number and send SMS
     $phone = '+63' . ltrim($student['guardian_num'], '0');
-    sendSMS($phone, $message);
+    $smsResult = sendSMS($phone, $message);
 
     // Update last activity time for batch notifications
     $activity_file = "./res/last_attendance_activity.txt";
@@ -152,7 +154,8 @@ try {
             'attendance_summary' => [
                 'on_time' => $on_time,
                 'lates' => $lates
-            ]
+            ],
+            'sms_status' => $smsResult['success']
         ]
     ]);
 
