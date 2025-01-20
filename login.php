@@ -23,7 +23,7 @@
       header("Location: dashboard.php");
       die;
     } else {
-      echo "<script>alert('Incorrect username or password.');</script>";
+      $error_message = "Incorrect username or password.";
     }   
   }
 ?>
@@ -245,6 +245,7 @@
                 name="username"
                 class="form-input" 
                 placeholder="Enter your username"
+                value="<?php echo isset($username) ? $username : ''; ?>"
                 required
               />
             </div>
@@ -256,11 +257,16 @@
                 name="password"
                 class="form-input" 
                 placeholder="Enter your password"
+                value="<?php echo isset($password) ? $password : ''; ?>"
                 required
               />
             </div>
+
+            <?php if (!empty($error_message)): ?>
+              <p id="message" style="color: red; text-align: center; "><?php echo $error_message; ?></p>
+            <?php endif; ?>
+
             <input type="submit" class="submit-btn" value="Log In">
-            <p id="message"></p>
             <!-- <a href="forgot_password.php" class="auth-link">Forgot password?</a> -->
             <a href="register.php" class="auth-link">Create account</a>
           </form>

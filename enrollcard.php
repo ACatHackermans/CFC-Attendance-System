@@ -31,23 +31,74 @@ session_start();
   }
 
   if($_SERVER['REQUEST_METHOD'] == "POST") {
-    $studentNumber = htmlspecialchars($_POST['studentNumber'], ENT_QUOTES);
-    $nfcUid = htmlspecialchars($_POST['nfcUid'], ENT_QUOTES); // Add this line
-    $surname = htmlspecialchars($_POST['surname'], ENT_QUOTES);
-    $firstName = htmlspecialchars($_POST['firstName'], ENT_QUOTES);
-    $birthday = htmlspecialchars($_POST['birthday'], ENT_QUOTES);
-    $email = htmlspecialchars($_POST['email'], ENT_QUOTES);
-    $contactNumber = htmlspecialchars($_POST['contactNumber'], ENT_QUOTES);
-    $guardianName = htmlspecialchars($_POST['guardianName'], ENT_QUOTES);
-    $guardianNumber = htmlspecialchars($_POST['guardianNumber'], ENT_QUOTES);
+    $errors = [];
 
-    if ($surname !== trim($surname) || $firstName !== trim($firstName)) {
-        echo "<script>alert('Name cannot start or end with a whitespace.');</script>";    
-    } else {
-        $surname = trim($surname);
-        $firstName = trim($firstName);
-        $guardianName = trim($guardianName);
-        
+    // Sanitize input
+    function clean_input($data) {
+        return htmlspecialchars(stripslashes(trim($data)));
+    }
+
+    $studentNumber = clean_input($_POST['studentNumber']);
+    $surname = clean_input($_POST['surname']);
+    $firstName = clean_input($_POST['firstName']);
+    $email = clean_input($_POST['email']);
+    $contactNumber = clean_input($_POST['contactNumber']);
+    $birthday = clean_input($_POST['birthday']);
+    $guardianName = clean_input($_POST['guardianName']);
+    $guardianNumber = clean_input($_POST['guardianNumber']);
+
+    // Validate student number (6-10 digits)
+    // if (!preg_match('/^\d{6,10}$/', $studentNumber)) {
+    //   $errors[] = "Student number must be between 6 and 10 digits.";
+    // }
+
+    // Validate name fields (letters and spaces only)
+    if (!preg_match('/^[A-Za-z\s]+$/', $surname) || !preg_match('/^[A-Za-z\s]+$/', $firstName)) {
+      $errors[] = "Student name should only contain letters.";
+    }
+
+    // Validate email format
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      $errors[] = "Invalid email format.";
+    }
+
+    // Validate email with allowed domains
+    $allowed_domains = ['gmail.com', 'yahoo.com'];
+    $email_parts = explode('@', $email);
+
+    if (count($email_parts) != 2 || !in_array(strtolower($email_parts[1]), $allowed_domains)) {
+      $errors['email'] = "Email address must be valid (e.g., example@gmail.com).";
+    }
+
+    // Validate contact numbers (10 digits)
+    if (!preg_match('/^\d{10}$/', $contactNumber) || !preg_match('/^\d{10}$/', $guardianNumber)) {
+      $errors[] = "Contact numbers must be exactly 10 digits.";
+    }
+
+    // Validate birthday (not in the future)
+    if (strtotime($birthday) > time()) {
+      $errors[] = "Invalid birthday. Cannot be in the future.";
+    }
+
+    // Validate guardian name field (letters and spaces only)
+    if (!preg_match('/^[A-Za-z\s]+$/', $guardianName)) {
+      $errors[] = "Guardian name should only contain letters.";
+    }
+
+    if (empty($errors)) {
+      $surname = trim($surname);
+      $firstName = trim($firstName);
+      $guardianName = trim($guardianName);
+
+      // Check if student number, full name, email or contact number already exists
+      $stmt = $con->prepare("SELECT * FROM class_list WHERE student_num = ? OR (surname = ? AND first_name = ?) OR email = ? OR contact_num = ?");
+      $stmt->bind_param("sssss", $studentNumber, $surname, $firstName, $email, $contactNumber);
+      $stmt->execute();
+      $result = $stmt->get_result();
+
+      if ($result->num_rows > 0) {
+        echo "<script>alert('This student is already registered!');</script>";
+      } else {
         // Check if NFC UID already exists
         $stmt = $con->prepare("SELECT student_num FROM class_list WHERE nfc_uid = ?");
         $stmt->bind_param("s", $nfcUid);
@@ -55,20 +106,21 @@ session_start();
         $result = $stmt->get_result();
         
         if ($result->num_rows > 0) {
-            echo "<script>alert('This NFC card is already enrolled!');</script>";
+          echo "<script>alert('This NFC card is already enrolled!');</script>";
         } else {
-            // Save to database with NFC UID
-            $stmt = $con->prepare("INSERT INTO class_list (student_num, nfc_uid, surname, first_name, birthday, email, contact_num, guardian_name, guardian_num) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssssssss", $studentNumber, $nfcUid, $surname, $firstName, $birthday, $email, $contactNumber, $guardianName, $guardianNumber);
+          // Save to database with NFC UID
+          $stmt = $con->prepare("INSERT INTO class_list (student_num, nfc_uid, surname, first_name, birthday, email, contact_num, guardian_name, guardian_num) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+          $stmt->bind_param("sssssssss", $studentNumber, $nfcUid, $surname, $firstName, $birthday, $email, $contactNumber, $guardianName, $guardianNumber);
 
-            if (!$stmt->execute()) {
-                echo "<script>alert('Error: " . $stmt->error . "');</script>";
-            } else {
-                echo "<script>alert('Enrolled successfully.');</script>";
-                header("Location: enrollcard.php");
-                die;
-            }
+          if (!$stmt->execute()) {
+            echo "<script>alert('Error: " . $stmt->error . "');</script>";
+          } else {
+            echo "<script>alert('Enrolled successfully.');</script>";
+            header("Location: enrollcard.php");
+            die;
+          }
         }
+      }
     }
   }
 ?>
@@ -513,48 +565,57 @@ session_start();
                 <div style="display: flex;">
                   <div class="form-group">
                     <label for="studentNumber" class="form-label">Student Number</label>
-                    <input type="text" id="studentNumber" name="studentNumber" class="form-input" placeholder="Type here" required>
+                    <input type="text" id="studentNumber" name="studentNumber" class="form-input" placeholder="Type here" value="<?php echo isset($studentNumber) ? $studentNumber : ''; ?>" required>
                   </div>
                 </div>
                 <div style="display: flex; gap: 20px;">
                   <div class="form-group">
                     <label for="surname" class="form-label">Surname</label>
-                    <input type="text" id="surname" name="surname" class="form-input" placeholder="Type here" required>
+                    <input type="text" id="surname" name="surname" class="form-input" placeholder="Type here" value="<?php echo isset($surname) ? $surname : ''; ?>" required>
                   </div>
         
                   <div class="form-group">
                     <label for="firstName" class="form-label">Name</label>
-                    <input type="text" id="firstName" name="firstName" class="form-input" placeholder="Type here" required>
+                    <input type="text" id="firstName" name="firstName" class="form-input" placeholder="Type here" value="<?php echo isset($firstName) ? $firstName : ''; ?>" required>
                   </div>
                 </div>
                 <div style="display: flex; gap: 20px;">
                   <div class="form-group">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" id="email" name="email" class="form-input" placeholder="Type here" required>
+                    <input type="email" id="email" name="email" class="form-input" placeholder="Type here" value="<?php echo isset($email) ? $email : ''; ?>" required>
                   </div>
                   <div class="form-group">
                     <label for="contactNumber" class="form-label">Contact Number</label>
                     <label style="font-size:14px"> +63 </label>
-                    <input type="tel" id="contactNumber" name="contactNumber" class="form-input" placeholder="Type here" required>
+                    <input type="tel" id="contactNumber" name="contactNumber" class="form-input" placeholder="Type here" value="<?php echo isset($contactNumber) ? $contactNumber : ''; ?>" required>
                   </div>
                 </div>
                 <div style="display: flex;">
                   <div class="form-group">
                     <label for="birthday" class="form-label">Birthday</label>
-                    <input type="date" id="birthday" name="birthday" class="form-input" placeholder="Type here" required>
+                    <input type="date" id="birthday" name="birthday" class="form-input" placeholder="Type here" value="<?php echo isset($birthday) ? $birthday : ''; ?>" required>
                   </div>
                 </div>  
                 <div style="display: flex; gap: 20px;">        
                   <div class="form-group">
                     <label for="guardianName" class="form-label">Guardian / Parent Name</label>
-                    <input type="text" id="guardianName" name="guardianName" class="form-input" placeholder="Type here" required>
+                    <input type="text" id="guardianName" name="guardianName" class="form-input" placeholder="Type here" value="<?php echo isset($guardianName) ? $guardianName : ''; ?>" required>
                   </div>
         
                   <div class="form-group">
                     <label for="guardianNumber" class="form-label">Guardian / Parent Contact Number</label>
                     <label style="font-size:14px"> +63 </label>
-                    <input type="tel" id="guardianNumber" name="guardianNumber" class="form-input" placeholder="Type here" required>
+                    <input type="tel" id="guardianNumber" name="guardianNumber" class="form-input" placeholder="Type here" value="<?php echo isset($guardianNumber) ? $guardianNumber : ''; ?>" required>
                   </div>
+                </div>
+                <div id="error-container" style="color: red; ; margin-bottom: 10px;">
+                  <?php
+                    if (!empty($errors)) {
+                      foreach ($errors as $error) {
+                          echo "<div>$error</div>";
+                      }
+                    }
+                  ?>
                 </div>
                 <div>
                   <input type="submit" id="submitBtn" value="Submit" class="button" style="border: none; cursor: pointer; opacity: 0.5;" disabled>
@@ -663,17 +724,17 @@ session_start();
 
       // Initialize when document is ready
       $(document).ready(function() {
-          setInterval(checkNFC, 1000);
+        setInterval(checkNFC, 1000);
           
-          // Add form validation
-          $('.form-container').on('submit', function(e) {
-              if (!$('#nfcUid').val()) {
-                  e.preventDefault();
-                  alert('Please tap an NFC card before submitting the form.');
-                  return false;
-              }
-              return true;
-          });
+        // Add form validation
+        $('.form-container').on('submit', function(e) {
+            if (!$('#nfcUid').val()) {
+                e.preventDefault();
+                alert('Please tap an NFC card before submitting the form.');
+                return false;
+            }
+            return true;
+        });
       });
     </script>
   </body>
