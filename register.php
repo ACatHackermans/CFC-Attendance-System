@@ -7,32 +7,51 @@
     header("Location: ./dashboard.php");
   }
 
-  if($_SERVER['REQUEST_METHOD'] == "POST") {
-    if($_POST['password'] == $_POST['confirm_password']) {
-      $username = htmlspecialchars($_POST['username'], ENT_QUOTES);
-      $password = password_hash(htmlspecialchars($_POST['password'], ENT_QUOTES), PASSWORD_BCRYPT);
+  $error_message = "";
+  $username = $password = $confirm_password = "";
 
-      if ($username !== trim($username)) {
-        echo "<script>alert('Username cannot start or end with a whitespace.');</script>";
-      } else if (strpos($password, ' ') !== false) {
-        echo "<script>alert('Password cannot have spaces.');</script>";
-      } else {
-        $username = trim($username);
-        
-        // Save to database
-        $stmt = $con->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
-        $stmt->bind_param("ss", $username, $password);
+  if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    require("connection.php");
+    $username = trim(htmlspecialchars($_POST['username'], ENT_QUOTES));
+    $password = htmlspecialchars($_POST['password'], ENT_QUOTES);
+    $confirm_password = htmlspecialchars($_POST['confirm_password'], ENT_QUOTES);
 
-        if (!$stmt->execute()) {
-          echo "<script>alert('Error: " . $stmt->error . "');</script>";
-        } else {
-          header("Location: login.php");
-          die;
-        }
-      }
+    // Check if username exists
+    $stmt = $con->prepare("SELECT username FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+        $error_message = "Username is already taken.";
     }
+    // Username validation
+    else if (!preg_match("/^[a-zA-Z0-9\s._]{3,20}$/", $username)) {
+      $error_message = "Username must be 3-20 characters and contain only letters, numbers, spaces, underscores, or periods.";
+    } 
+    // Password validation
+    else if (preg_match('/\s/', $password)) {
+      $error_message = "Password cannot contain spaces.";
+    } else if (!preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $password)) {
+        $error_message = "Password must be at least 8 characters with an uppercase letter, number, and special character.";
+    } else if ($password !== $confirm_password) {
+      $error_message = "Passwords do not match.";
+    } else {
+        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+        $stmt = $con->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
+        $stmt->bind_param("ss", $username, $hashed_password);
+
+        if ($stmt->execute()) {
+            header("Location: login.php");
+            exit();
+        } else {
+            $error_message = "Error: " . $stmt->error;
+        }
+    }
+    $stmt->close();
   }
 ?>
+
 
 <!DOCTYPE html>
 
@@ -204,6 +223,19 @@
         text-decoration: underline;
       }
 
+      .password-wrapper {
+        position: relative;
+      }
+
+      .password-toggle {
+        position: absolute;
+        right: 10px;  /* Adjust to fit your design */
+        top: 50%;
+        transform: translateY(20%);
+        cursor: pointer;
+      }
+
+
       .visually-hidden {
         position: absolute;
         width: 1px;
@@ -244,7 +276,7 @@
             Student Attendance Management System
           </h1>
           <h2 class="auth-header">REGISTER</h2>
-          <form class="auth-form" action="<?php htmlspecialchars($_SERVER["PHP_SELF"])?>" method="post">
+          <form class="auth-form" action="<?php htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group">
               <label for="username" class="form-label">Username</label>
               <input 
@@ -253,6 +285,7 @@
                 name="username"
                 class="form-input" 
                 placeholder="Enter your username"
+                value="<?php echo htmlspecialchars($username); ?>"
                 required
               />
             </div>
@@ -264,29 +297,47 @@
                 name="password" 
                 class="form-input" 
                 placeholder="Enter your password"
-                oninput="check()"
+                value="<?php echo htmlspecialchars($password); ?>"
                 required
               />
+              <span id="password-toggle" class="password-toggle">
+                <img src="res/icons/eye.svg" id="password-toggle-icon"  style="width: 20px; filter: brightness(1) invert(0.5);">
+              </span>
             </div>
             <div class="form-group">
-              <label for="password" class="form-label">Confirm Password</label>
+              <label for="confirm_password" class="form-label">Confirm Password</label>
               <input 
                 type="password" 
                 id="confirm_password"
                 name="confirm_password" 
                 class="form-input" 
                 placeholder="Re-enter your password"
-                oninput="check()"
+                value="<?php echo htmlspecialchars($confirm_password); ?>"
                 required
               />
             </div>
-            <p id="message"></p>
+
+            <p id="message" style="color: red; text-align: center;"><?php echo $error_message; ?></p>
+
             <input type="submit" class="submit-btn" name="submit" id="submit" value="Sign Up">
             <a href="login.php" class="auth-link">Already have an account?</a>
           </form>
         </main>
       </section>
 
-      <script src="script.js"></script>
+      <script>
+        document.getElementById('password-toggle').addEventListener('click', function() {
+          var passwordField = document.getElementById('password');
+          var toggleIcon = document.getElementById('password-toggle-icon');
+
+          if (passwordField.type === "password") {
+            passwordField.type = "text";
+            toggleIcon.src = "res/icons/eye-slashed.svg";
+          } else {
+            passwordField.type = "password";
+            toggleIcon.src = "res/icons/eye.svg";
+          }
+        });
+      </script>
     </body>    
 </html>

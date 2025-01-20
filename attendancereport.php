@@ -74,7 +74,10 @@ if (isset($_SESSION['user_id'])) {
     <title>Attendance Reports - CFCSR Student Attendance Management System</title>
     <link rel="icon" type="image/x-icon" href="./res/img/favicon.ico">
     <script src="./js/jquery-3.7.1.min.js"></script>
-    <script src="./js/search.js"></script>
+    <!-- <script src="./js/search.js"></script> -->
+    <script src="./js/jspdf.umd.min.js"></script>
+    <script src="./js/jspdf.plugin.autotable.min.js"></script>
+
 
     <style>
       html, body {
@@ -390,6 +393,64 @@ if (isset($_SESSION['user_id'])) {
         background-color: #c4c4c4;
         height: 73px;
       } */
+
+      /* Style for the Generate Report button */
+      #generateReportBtn {
+            position: fixed; /* Makes it stay in one place regardless of scrolling */
+            bottom: 20px; /* Distance from the bottom of the page */
+            right: 20px; /* Distance from the right side of the page */
+            padding: 12px;
+            font-size: 16px;
+            font-family: var(
+              --single-line-body-base-font-family,
+              "Inter-Regular",
+              sans-serif
+            );
+            background-color: #009951;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            text-decoration: none;            
+        }
+
+        #generateReportBtn:hover {
+          background-color: #12a054; /* Slightly darker blue on hover */
+        }
+
+      /* Basic modal styling */
+      #fileModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        #fileModal .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            width: 250px;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .modal-content button {
+            margin: 10px;
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .modal-content button:hover {
+          background-color: #12a054;
+        }
       
       @media (max-width: 991px) {
         .main-layout { 
@@ -487,6 +548,19 @@ if (isset($_SESSION['user_id'])) {
               <a href="attendancehistory.php" class="button">
                 <span>Attendance History</span>
               </a>
+
+              <button id="generateReportBtn" class="button">Generate Report</button>
+
+              <!-- Popup Modal -->
+              <div id="fileModal">
+                  <div class="modal-content">
+                      <h3>Select File Format</h3>
+                      <form method="POST">
+                        <button onclick="exportToPDF()" type="button" class="button">Download as PDF</button>
+                        <button onclick="exportToCSV()" type="button" class="button">Download as CSV</button>
+                      </form>
+                  </div>
+              </div>
               
               <div class="search-controls">
                 <form class="search-box" role="search">
@@ -499,7 +573,7 @@ if (isset($_SESSION['user_id'])) {
             
               <div class="table-container">
                 <div class="table-wrapper">
-                    <table class="data-table attendance">
+                    <table id="attendance_table" class="data-table attendance">
                         <thead>
                             <tr>
                                 <th class="col-student-num">Student Number</th>
@@ -664,6 +738,121 @@ if (isset($_SESSION['user_id'])) {
               performSearch('');
           });
       });
+    </script>
+
+    <script>
+        const modal = document.getElementById('fileModal');
+        const button = document.getElementById('generateReportBtn');
+
+        // Show modal on button click
+        button.addEventListener('click', () => {
+            modal.style.display = 'block';
+        });
+
+        // Hide modal if clicked outside content
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+        
+    <script>
+      function exportToPDF() {
+    const jsPDF = window.jspdf.jsPDF;
+    const doc = new jsPDF();
+
+    // Add Logo (centered)
+    const logo = new Image();
+    logo.src = 'res/img/CFC Logo.png';
+    logo.onload = function() {
+        const logoWidth = 30; // Width of the logo
+        const logoHeight = 30; // Height of the logo
+        const pageWidth = doc.internal.pageSize.width; // Page width
+        const logoX = (pageWidth - logoWidth) / 2; // Center the logo
+        doc.addImage(logo, 'PNG', logoX, 10, logoWidth, logoHeight);
+
+        // Add Title with current date
+        doc.setFontSize(18);
+        const currentDate = new Date().toLocaleDateString();  // Get current date
+        const title = `Student Attendance Report - ${currentDate}`;
+        const titleX = (pageWidth - doc.getTextWidth(title)) / 2; // Center the title
+        doc.text(title, titleX, 50); // Set the title position
+
+        // Add the table (starting below the title and logo)
+        doc.autoTable({
+            html: '#attendance_table',
+            startY: 60, // Start the table below the title and logo
+            styles: {
+                font: 'Helvetica',
+                fontSize: 10,
+                textColor: [40, 40, 40],
+                lineColor: [0, 0, 0],
+                lineWidth: 0.2,
+            },
+            headStyles: {
+                fillColor: [20, 174, 92], // Custom header background color
+                textColor: [255, 255, 255], // White text
+                fontSize: 12,  
+            },
+            bodyStyles: {
+                fillColor: [230, 230, 230], // Light gray row background
+            },
+            alternateRowStyles: {
+                fillColor: [250, 250, 250], // Alternate rows background
+            },
+            columnStyles: {
+                1: { cellWidth: 25 },
+                2: { cellWidth: 25 },
+                0: {halign: 'center'},
+                1: { halign: 'center' },
+                2: { halign: 'center' },
+                3: { halign: 'center' },
+                4: { halign: 'center' },
+                5: { halign: 'center' },
+                6: { halign: 'center' },
+                7: { halign: 'center' },
+            },
+            didDrawPage: function (data) {
+                // Add footer
+                let str = 'Page ' + data.pageNumber;
+                doc.setFontSize(8);
+                doc.text(str, 200, 290, { align: 'right' });
+            },
+        });
+
+        // Save the PDF
+        doc.save('attendance_report.pdf');
+    };
+}
+
+
+      function exportToCSV() {
+        const table = document.getElementById("attendance_table");
+        let csv = [];
+
+        // Get table headers
+        const headers = Array.from(table.rows[0].cells).map(cell => cell.textContent);
+        csv.push(headers.join(","));
+
+        // Get table rows
+        for (let i = 1; i < table.rows.length; i++) {
+            const row = Array.from(table.rows[i].cells).map(cell => cell.textContent);
+            csv.push(row.join(","));
+        }
+
+        // Convert CSV array to a string
+        const csvString = csv.join("\n");
+
+        // Create a download link
+        const link = document.createElement("a");
+        link.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csvString);
+        link.target = "_blank";
+        link.download = "attendance_report.csv";
+
+        // Trigger the download
+        link.click();
+      }
     </script>
   </body>
 </html>    
