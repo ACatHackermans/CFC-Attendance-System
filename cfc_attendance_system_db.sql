@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 09, 2025 at 10:37 PM
+-- Generation Time: Jan 20, 2025 at 05:22 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -37,18 +37,6 @@ CREATE TABLE `attendance_log` (
   `status` enum('on_time','late') NOT NULL,
   `guardian_num` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `attendance_log`
---
-
-INSERT INTO `attendance_log` (`log_id`, `student_number`, `surname`, `name`, `log_date`, `time_in`, `status`, `guardian_num`) VALUES
-(25, '00273', 'Melgar', 'Felix Angelo', '2025-01-09', '11:46:17', 'late', '9189072959'),
-(26, '123', 'bugs', 'natnat', '2025-01-09', '16:08:26', 'late', '123456789'),
-(27, '514423', 'melgar', 'felix', '2025-01-09', '16:12:45', 'late', '1233424365'),
-(28, '1234', 'bascon', 'james', '2025-01-09', '16:13:03', 'late', '1234789'),
-(29, '123', 'bugs', 'natnat', '2025-01-10', '04:16:39', '', '123456789'),
-(31, '1234', 'bascon', 'james', '2025-01-12', '05:37:59', '', '9123407016');
 
 -- --------------------------------------------------------
 
@@ -92,7 +80,27 @@ CREATE TABLE `class_list` (
 --
 
 INSERT INTO `class_list` (`student_num`, `nfc_uid`, `surname`, `first_name`, `birthday`, `email`, `contact_num`, `guardian_name`, `guardian_num`, `date_of_enrollment`) VALUES
-('1234', '1311F903', 'bascon', 'james', '2010-02-05', 'jc@gmail.com', '123456789', 'cecil', '9123407016', '2025-01-11 09:28:05');
+('00231', 'C4C4E9F6', 'Dela Cruz', 'Juan', '2001-07-14', 'juandelacruz@gmail.com', '9612133520', 'Maria', '9612133520', '2025-01-18 06:46:39'),
+('00274', '560FF703', 'Melgar', 'Felix Angelo', '2004-05-05', 'felixangelolmelgar@iskolarngbayan.pup.edu.ph', '9612135520', 'Felix', '9189072959', '2025-01-20 06:57:07'),
+('12345', '1311F903', 'Bascon', 'James Cedric', '2004-06-08', 'jamescedricbascon@gmail.com', '9123407016', 'Cathy', '9612133520', '2025-01-18 06:10:43');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notification_queue`
+--
+
+CREATE TABLE `notification_queue` (
+  `queue_id` int(11) NOT NULL,
+  `student_num` varchar(255) NOT NULL,
+  `guardian_phone` varchar(20) NOT NULL,
+  `guardian_name` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `attempts` int(11) DEFAULT 0,
+  `status` enum('pending','processing','completed','failed') DEFAULT 'pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `last_attempt` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -112,8 +120,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `password`, `date_of_signup`) VALUES
-(1, 'felix', '$2y$10$hLQx5A02cgqKcCRYrhE3aO9nWT79SYlv5cYZXmGN2WN5GQpDPU2Nu', '2025-01-08 05:17:15'),
-(2, 'bugna', '$2y$10$jnUsIvnnhvlsBejZZc8pK.OOd2HJUFGA2cYg10v3zSf2nbe8s6e6S', '2025-01-09 08:02:51');
+(7, 'felix123', '$2y$10$ewjc3oxKGk4l6wDGks.k0eOYqbNX9ETr.ZVYxxaohxpBmEmEJ/O/i', '2025-01-18 06:20:45'),
+(8, 'felixcfc', '$2y$10$7kpiASmwZHU7R9U.SEQlauH8BMY/m1xKRUx2AWaAhpWdg4T2d83CO', '2025-01-18 06:44:46');
 
 --
 -- Indexes for dumped tables
@@ -142,6 +150,14 @@ ALTER TABLE `class_list`
   ADD KEY `nfc_uid_2` (`nfc_uid`);
 
 --
+-- Indexes for table `notification_queue`
+--
+ALTER TABLE `notification_queue`
+  ADD PRIMARY KEY (`queue_id`),
+  ADD KEY `status_idx` (`status`),
+  ADD KEY `student_num` (`student_num`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -155,19 +171,25 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `attendance_log`
 --
 ALTER TABLE `attendance_log`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=94;
 
 --
 -- AUTO_INCREMENT for table `attendance_report`
 --
 ALTER TABLE `attendance_report`
-  MODIFY `report_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `report_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
+
+--
+-- AUTO_INCREMENT for table `notification_queue`
+--
+ALTER TABLE `notification_queue`
+  MODIFY `queue_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables
@@ -178,6 +200,12 @@ ALTER TABLE `users`
 --
 ALTER TABLE `attendance_report`
   ADD CONSTRAINT `attendance_report_ibfk_1` FOREIGN KEY (`student_num`) REFERENCES `class_list` (`student_num`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `notification_queue`
+--
+ALTER TABLE `notification_queue`
+  ADD CONSTRAINT `notification_queue_ibfk_1` FOREIGN KEY (`student_num`) REFERENCES `class_list` (`student_num`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

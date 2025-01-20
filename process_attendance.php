@@ -128,7 +128,32 @@ try {
         $insert_report_stmt->execute();
     }
 
-    // Update last activity time for batch notifications
+    // Build message with explicit line breaks and guardian's name
+    $message = "Dear {$student['guardian_name']}|";
+    $message .= "{$student['surname']}, {$student['first_name']} has successfully checked in at school today.|";
+    $message .= "Date: " . date('F j, Y') . "|";
+    $message .= "Time: " . date('h:i A', strtotime($current_time)) . "|";
+    $message .= "Status: " . ucfirst($status) . "|";
+    $message .= "- CFC School Administration";
+
+    // Add notification to queue
+    $queue_stmt = $con->prepare("
+        INSERT INTO notification_queue 
+        (student_num, guardian_phone, guardian_name, message) 
+        VALUES (?, ?, ?, ?)
+    ");
+    
+    $queue_stmt->bind_param(
+        "ssss",
+        $student['student_num'],
+        $student['guardian_num'],
+        $student['guardian_name'],
+        $message
+    );
+    
+    $notification_queued = $queue_stmt->execute();
+
+    // Update last activity time
     $activity_file = "./res/last_attendance_activity.txt";
     file_put_contents($activity_file, time());
 
@@ -143,6 +168,7 @@ try {
             'first_name' => $student['first_name'],
             'time_in' => date('h:i A', strtotime($current_time)),
             'status' => ucfirst($status),
+            'notification_queued' => $notification_queued,
             'attendance_summary' => [
                 'on_time' => $on_time,
                 'lates' => $lates
@@ -167,5 +193,6 @@ if (isset($insert_stmt)) $insert_stmt->close();
 if (isset($check_report_stmt)) $check_report_stmt->close();
 if (isset($update_report_stmt)) $update_report_stmt->close();
 if (isset($insert_report_stmt)) $insert_report_stmt->close();
+if (isset($queue_stmt)) $queue_stmt->close();
 $con->close();
 ?>

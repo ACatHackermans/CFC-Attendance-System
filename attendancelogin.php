@@ -543,62 +543,63 @@ session_start();
           }
 
           async function processAttendance(uid) {
-              try {
-                  const response = await $.ajax({
-                      url: 'process_attendance.php',
-                      method: 'POST',
-                      contentType: 'application/json',
-                      data: JSON.stringify({ uid: uid }),
-                      dataType: 'json'
-                  });
+            try {
+                const response = await $.ajax({
+                    url: 'process_attendance.php',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ uid: uid }),
+                    dataType: 'json'
+                });
 
-                  if (response.success) {
-                      updateAttendanceDisplay(response.student);
-                      $('.nfc-section').html(`
-                          <img src="res/icons/NFC.svg" alt="NFC icon" class="NFC-icon" />
-                          <div style="text-align: center; color: #009951;">
-                              Attendance recorded successfully!<br>
-                              Please tap NFC-enabled card on the NFC reader to take attendance...
-                          </div>
-                      `);
-                  } else {
-                      throw new Error(response.error || 'Failed to record attendance');
-                  }
-              } catch (error) {
-                  console.error('Error processing attendance:', error);
-                  $('.nfc-section').html(`
-                      <img src="res/icons/NFC.svg" alt="NFC icon" class="NFC-icon" />
-                      <div style="text-align: center; color: #FF0000;">
-                          ${error.message || 'Error recording attendance'}<br>
-                          Please tap NFC-enabled card on the NFC reader to take attendance...
-                      </div>
-                  `);
-                  
-                  $('.loggingin-container').html(`
-                      <div class="student-avatar" role="img" aria-label="Student Profile"></div>
-                      <div style="line-height: 40px;">
-                          <b>Error</b>
-                          <br />
-                          Time In: --:--
-                          <br />
-                          Status: ---
-                      </div>
-                  `);
-              }
-          }
+                if (response.success) {
+                    updateAttendanceDisplay(response.student);
+                    $('.nfc-section').html(`
+                        <img src="res/icons/NFC.svg" alt="NFC icon" class="NFC-icon" />
+                        <div style="text-align: center; color: #009951;">
+                            Attendance recorded successfully!<br>
+                            ${response.student.notification_sent ? 'Guardian notification sent.' : 'Guardian notification pending.'}<br>
+                            Please tap NFC-enabled card on the NFC reader to take attendance...
+                        </div>
+                    `);
+                } else {
+                    throw new Error(response.error || 'Failed to record attendance');
+                }
+            } catch (error) {
+                console.error('Error processing attendance:', error);
+                $('.nfc-section').html(`
+                    <img src="res/icons/NFC.svg" alt="NFC icon" class="NFC-icon" />
+                    <div style="text-align: center; color: #FF0000;">
+                        ${error.message || 'Error recording attendance'}<br>
+                        Please tap NFC-enabled card on the NFC reader to take attendance...
+                    </div>
+                `);
+                
+                $('.loggingin-container').html(`
+                    <div class="student-avatar" role="img" aria-label="Student Profile"></div>
+                    <div style="line-height: 40px;">
+                        <b>Surname, Name</b>
+                        <br />
+                        Time In: --:--
+                        <br />
+                        Status: ---
+                    </div>
+                `);
+            }
+        }
 
-          function updateAttendanceDisplay(student) {
-              $('.loggingin-container').html(`
-                  <div class="student-avatar" role="img" aria-label="Student Profile"></div>
-                  <div style="line-height: 40px;">
-                      <b>${student.surname}, ${student.first_name}</b>
-                      <br />
-                      Time In: ${student.time_in}
-                      <br />
-                      Status: ${student.status}
-                  </div>
-              `);
-          }
+        function updateAttendanceDisplay(student) {
+            $('.loggingin-container').html(`
+                <div class="student-avatar" role="img" aria-label="Student Profile"></div>
+                <div style="line-height: 40px;">
+                    <b>${student.surname}, ${student.first_name}</b>
+                    <br />
+                    Time In: ${student.time_in}
+                    <br />
+                    Status: ${student.status}
+                </div>
+            `);
+        }
 
           // Reset display after 10 seconds of no new scans
           function resetDisplay() {

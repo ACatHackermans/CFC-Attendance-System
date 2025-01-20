@@ -1,0 +1,69 @@
+2025-01-20 15:33:42,299 - INFO - Modem initialized successfully
+2025-01-20 15:33:49,304 - INFO - SMS sent successfully to +639189072959
+2025-01-20 15:37:44,160 - INFO - Modem initialized successfully
+2025-01-20 15:37:51,164 - INFO - SMS sent successfully to +639189072959
+2025-01-20 16:01:27,296 - INFO - Modem initialized successfully
+2025-01-20 16:01:34,299 - WARNING - Attempt 1 failed. Response: 
+2025-01-20 16:01:43,303 - INFO - SMS sent successfully to +639189072959
+2025-01-20 16:37:05,939 - ERROR - Failed to initialize modem: could not open port 'COM4': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2025-01-20 16:37:05,939 - ERROR - Failed to initialize modem
+2025-01-20 16:37:08,052 - ERROR - Failed to initialize modem: could not open port 'COM4': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2025-01-20 16:37:08,052 - ERROR - Failed to initialize modem
+2025-01-20 16:39:10,284 - INFO - Modem initialized successfully
+2025-01-20 16:39:17,421 - WARNING - Attempt 1 failed. Response: 
+2025-01-20 16:39:20,422 - ERROR - Attempt 2 failed with error: Modem not responding
+2025-01-20 16:39:29,561 - WARNING - Attempt 3 failed. Response: 
+2025-01-20 16:39:31,562 - ERROR - Failed to send SMS after 3 attempts
+2025-01-20 16:39:33,680 - INFO - Modem initialized successfully
+2025-01-20 16:39:40,818 - WARNING - Attempt 1 failed. Response: 
+2025-01-20 16:39:49,955 - WARNING - Attempt 2 failed. Response: 
+2025-01-20 16:39:59,092 - WARNING - Attempt 3 failed. Response: 
+2025-01-20 16:40:01,094 - ERROR - Failed to send SMS after 3 attempts
+2025-01-20 16:56:11,144 - INFO - Modem initialized successfully
+2025-01-20 16:56:18,279 - WARNING - Attempt 1 failed. Response: 
+2025-01-20 16:56:27,417 - WARNING - Attempt 2 failed. Response: 
+2025-01-20 16:56:36,553 - WARNING - Attempt 3 failed. Response: 
+2025-01-20 16:56:38,554 - ERROR - Failed to send SMS after 3 attempts
+2025-01-20 16:56:40,682 - INFO - Modem initialized successfully
+2025-01-20 16:56:47,818 - WARNING - Attempt 1 failed. Response: 
+2025-01-20 16:56:50,819 - ERROR - Attempt 2 failed with error: Modem not responding
+2025-01-20 17:13:30,407 - ERROR - Failed to initialize modem: could not open port 'COM4': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2025-01-20 17:13:30,407 - ERROR - Attempt 1 failed with error: Failed to initialize modem
+2025-01-20 17:13:32,408 - ERROR - Failed to initialize modem: could not open port 'COM4': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2025-01-20 17:13:32,408 - ERROR - Attempt 2 failed with error: Failed to initialize modem
+2025-01-20 17:13:34,409 - ERROR - Failed to initialize modem: could not open port 'COM4': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2025-01-20 17:13:34,409 - ERROR - Attempt 3 failed with error: Failed to initialize modem
+2025-01-20 17:13:36,409 - ERROR - Failed to send SMS after 3 attempts
+2025-01-20 17:13:38,516 - ERROR - Failed to initialize modem: could not open port 'COM4': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2025-01-20 17:13:38,516 - ERROR - Attempt 1 failed with error: Failed to initialize modem
+2025-01-20 17:13:40,516 - ERROR - Failed to initialize modem: could not open port 'COM4': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2025-01-20 17:13:40,516 - ERROR - Attempt 2 failed with error: Failed to initialize modem
+2025-01-20 17:13:42,517 - ERROR - Failed to initialize modem: could not open port 'COM4': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2025-01-20 17:13:42,517 - ERROR - Attempt 3 failed with error: Failed to initialize modem
+2025-01-20 17:13:44,518 - ERROR - Failed to send SMS after 3 attempts
+2025-01-20 17:15:48,278 - INFO - Modem initialized successfully
+2025-01-20 17:15:51,380 - INFO - Command: AT, Response: 
+OK
+
+2025-01-20 17:15:54,482 - INFO - Command: AT+CMGF=1, Response: 
+OK
+
+2025-01-20 17:15:57,584 - INFO - Command: AT+CMGD=1,4, Response: 
+OK
+
+2025-01-20 17:16:01,685 - INFO - Command: AT+CMGS="+639189072959", Response: 
+> 
+2025-01-20 17:16:06,320 - INFO - SMS sent successfully to +639189072959
+2025-01-20 17:16:10,430 - INFO - Modem initialized successfully
+2025-01-20 17:16:13,531 - INFO - Command: AT, Response: 
+OK
+
+2025-01-20 17:16:16,632 - INFO - Command: AT+CMGF=1, Response: 
+OK
+
+2025-01-20 17:16:19,734 - INFO - Command: AT+CMGD=1,4, Response: 
+OK
+
+2025-01-20 17:16:23,836 - INFO - Command: AT+CMGS="+639612133520", Response: 
+> 
+2025-01-20 17:16:28,471 - INFO - SMS sent successfully to +639612133520
