@@ -69,7 +69,7 @@ if ($table === 'classlist') {
                 $baseQuery .= " ORDER BY time_in DESC";
                 break;
             case 'on time':
-                $baseQuery .= " ORDER BY status_today = 'present' DESC, time_in ASC";
+                $baseQuery .= " ORDER BY status_today = 'on time' DESC, time_in ASC";
                 break;
             case 'late':
                 $baseQuery .= " ORDER BY status_today = 'late' DESC, time_in DESC";
@@ -79,6 +79,54 @@ if ($table === 'classlist') {
                 break;
             default:
                 $baseQuery .= " ORDER BY time_in DESC";
+        }
+    }
+    
+    $stmt = $con->prepare($baseQuery);
+    
+    if (!empty($search)) {
+        $stmt->bind_param("ssss", $search, $search, $search, $search);
+    }
+    
+} else if ($table === 'attendance_history') {
+    $baseQuery = "SELECT * FROM attendance_log WHERE 1=1";
+    
+    if (!empty($search)) {
+        // Check if search is a date
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $search)) {
+            $baseQuery .= " AND DATE(log_date) = ?";
+            $searchType = 'date';
+        } else {
+            $search = "%$search%";
+            $baseQuery .= " AND (student_number LIKE ? OR 
+                               surname LIKE ? OR 
+                               name LIKE ? OR 
+                               status LIKE ? OR 
+                               DATE_FORMAT(log_date, '%Y-%m-%d') LIKE ?)";
+            $searchType = 'text';
+        }
+    }
+    
+    // Add sorting
+    if (!empty($sort)) {
+        switch(strtolower($sort)) {
+            case 'student number':
+                $baseQuery .= " ORDER BY student_number ASC";
+                break;
+            case 'surname':
+                $baseQuery .= " ORDER BY surname ASC";
+                break;
+            case 'name':
+                $baseQuery .= " ORDER BY name ASC";
+                break;
+            case 'log date':
+                $baseQuery .= " ORDER BY log_date DESC";
+                break;
+            case 'time in':
+                $baseQuery .= " ORDER BY time_in DESC";
+                break;
+            default:
+                $baseQuery .= " ORDER BY log_date DESC, time_in DESC";
         }
     }
     

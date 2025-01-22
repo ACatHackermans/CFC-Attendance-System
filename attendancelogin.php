@@ -140,10 +140,10 @@ session_start();
     .user-section {
       display: flex;
       margin-top: 50px;
-      /* min-height: 243px; */
       flex-direction: column;
       justify-content: center;
     }
+
     .user-profile {
       display: flex;
       align-items: center;
@@ -152,12 +152,20 @@ session_start();
       color: #000;
       letter-spacing: -0.2px;
       padding: 32px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .user-profile:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+      border-radius: 10px;
     }
     .avatar {
       background-color: #d9d9d9;
       border-radius: 50%;
       width: 50px;
       height: 50px;
+      border: 2px solid #14AE5C;
     }      
     /* .username { width: 90px; } */
     .content-column {
@@ -339,6 +347,156 @@ session_start();
       height: 73px;
     } */
     
+    /* Profile Modal styles */
+    .profile-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .profile-modal-content {
+        background-color: #fff;
+        margin: 10% auto;
+        padding: 30px;
+        width: 300px; /* Reduced from 350px */
+        border-radius: 15px;
+        position: relative;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .profile-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .avatar-upload {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        position: relative;
+    }
+
+    .avatar-preview {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background-color: #f0f0f0;
+        overflow: hidden;
+        position: relative;
+        border: 3px solid #14AE5C;
+    }
+
+    .avatar-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .avatar-edit {
+        position: absolute;
+        right: -5px;
+        bottom: -5px;
+        width: 32px;
+        height: 32px;
+        background-color: #14AE5C;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        padding: 7px;
+        border: 2px solid white;
+    }
+
+    .avatar-edit:hover {
+        background-color: #098100;
+    }
+
+    .avatar-edit img {
+        width: 15px;
+        height: 15px;
+        filter: brightness(0) invert(1);
+    }
+
+    .avatar-input {
+        display: none;
+    }
+
+    .close-modal {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        cursor: pointer;
+        font-size: 24px;
+        color: #666;
+        transition: color 0.2s;
+    }
+
+    .close-modal:hover {
+        color: #000;
+    }
+
+    .username-group {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .username-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .username-group input {
+        width: 100%;
+        box-sizing: border-box; /* This ensures padding doesn't add to width */
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.2s;
+    }
+
+    .username-group input:focus {
+        outline: none;
+        border-color: #14AE5C;
+    }
+
+    .save-button {
+        background-color: #14AE5C;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 25px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        width: 100%;
+    }
+
+    .save-button:hover {
+        background-color: #098100;
+    }
+
+    .save-button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    
+
     @media (max-width: 991px) {
       .main-layout { 
         flex-direction: column;
@@ -369,16 +527,6 @@ session_start();
       .date-year,
       .time-display {
         color: rgba(0, 153, 81, 1);
-      }
-
-      .form-container,
-      .nfc-section {
-        width: 100%;
-        margin: 13px 0 0;
-      }
-    
-      .nfc-section {
-        padding: 100px 20px 0 0;
       }
     }
     </style>
@@ -413,8 +561,8 @@ session_start();
 
             <div class="user-section">
               <div class="user-profile">
-                <div class="avatar" role="img" aria-label="User avatar"></div>
-                <span class="username"><?php echo $username; ?></span>
+                  <div class="avatar" style="background-image: url('get_avatar.php?id=<?php echo $user_id; ?>'); background-size: cover; background-position: center;" role="img" aria-label="User avatar"></div>
+                  <span class="username"><?php echo $username; ?></span>
               </div>
               <a class="nav-item" href="logout.php" target="_parent" style="font-weight: 700;">
                 <img src="res\icons\logout.svg" alt="" class="nav-icon" />
@@ -425,7 +573,7 @@ session_start();
         </aside>
 
         <section class="content-column">
-          <header class="page-header">STUDENT ATTENDANCE LOGIN & NFC ENROLLMENT</header>
+          <header class="page-header">STUDENT ATTENDANCE LOGIN</header>
           
           <div class="content-wrapper">            
             <div class="controls-section">
@@ -553,13 +701,18 @@ session_start();
                 });
 
                 if (response.success) {
+                    // Update attendance display regardless of notification status
                     updateAttendanceDisplay(response.student);
+                    
+                    // Update NFC section with success message
                     $('.nfc-section').html(`
                         <img src="res/icons/NFC.svg" alt="NFC icon" class="NFC-icon" />
                         <div style="text-align: center; color: #009951;">
+                            <br> <br>  
                             Attendance recorded successfully!<br>
-                            ${response.student.notification_sent ? 'Guardian notification sent.' : 'Guardian notification pending.'}<br>
-                            Please tap NFC-enabled card on the NFC reader to take attendance...
+                        <!--    ${response.student.notification_queued ? 
+                                'Guardian notification queued.' : 
+                                'Note: Guardian notification could not be queued.'} -->
                         </div>
                     `);
                 } else {
@@ -571,10 +724,11 @@ session_start();
                     <img src="res/icons/NFC.svg" alt="NFC icon" class="NFC-icon" />
                     <div style="text-align: center; color: #FF0000;">
                         ${error.message || 'Error recording attendance'}<br>
-                        Please tap NFC-enabled card on the NFC reader to take attendance...
+                        Please tap NFC-enabled card on the reader to take attendance...
                     </div>
                 `);
                 
+                // Reset attendance display on error
                 $('.loggingin-container').html(`
                     <div class="student-avatar" role="img" aria-label="Student Profile"></div>
                     <div style="line-height: 40px;">
@@ -653,6 +807,145 @@ session_start();
           setInterval(resetDisplay, 5000);
           setInterval(checkBatchNotifications, 10000);
       });
+    </script>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="profile-modal">
+        <div class="profile-modal-content">
+            <span class="close-modal">&times;</span>
+            <form id="profileForm" class="profile-form">
+                <div class="avatar-upload">
+                    <div class="avatar-preview">
+                        <img src="get_avatar.php?id=<?php echo $user_id; ?>" alt="Profile Avatar">
+                    </div>
+                    <label for="avatarInput" class="avatar-edit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                        </svg>
+                    </label>
+                    <input type="file" id="avatarInput" name="avatar" accept="image/*" class="avatar-input">
+                </div>
+                <div class="username-group">
+                    <label for="usernameInput">Username</label>
+                    <input type="text" id="usernameInput" name="username" value="<?php echo $username; ?>">
+                </div>
+                <button type="submit" class="save-button">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    $(document).ready(function() {
+        // Profile modal elements
+        const modal = $('#profileModal');
+        const modalContent = $('.profile-modal-content');
+        const closeBtn = $('.close-modal');
+        const userProfileDiv = $('.user-profile');
+        const avatarPreview = $('.avatar-preview img');
+        const avatarInput = $('#avatarInput');
+        const profileForm = $('#profileForm');
+        const usernameInput = $('#usernameInput');
+
+        // Open modal when clicking on user profile
+        userProfileDiv.on('click', function() {
+            modal.fadeIn(300);
+        });
+
+        // Close modal when clicking close button
+        closeBtn.on('click', function() {
+            modal.fadeOut(300);
+        });
+
+        // Close modal when clicking outside
+        modal.on('click', function(e) {
+            if ($(e.target).is(modal)) {
+                modal.fadeOut(300);
+            }
+        });
+
+        // Preview image when selected
+        avatarInput.on('change', function(e) {
+            const file = this.files[0];
+            if (file) {
+                // Validate file type
+                if (!file.type.match('image.*')) {
+                    alert('Please select an image file.');
+                    return;
+                }
+
+                // Validate file size (5MB max)
+                if (file.size > 5242880) {
+                    alert('File is too large. Maximum size is 5MB.');
+                    return;
+                }
+
+                // Preview the image
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    avatarPreview.attr('src', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Handle form submission
+        profileForm.on('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            const newUsername = usernameInput.val().trim();
+            
+            if (newUsername !== userProfileDiv.find('.username').text().trim()) {
+                formData.append('username', newUsername);
+            }
+            
+            const avatarFile = avatarInput[0].files[0];
+            if (avatarFile) {
+                formData.append('avatar', avatarFile);
+            }
+            
+            if (formData.entries().next().done) {
+                alert('No changes made.');
+                return;
+            }
+
+            const submitBtn = $(this).find('button[type="submit"]');
+            const originalText = submitBtn.text();
+            submitBtn.prop('disabled', true).text('Saving...');
+
+            $.ajax({
+                url: 'update_profile.php',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        if (response.username) {
+                            userProfileDiv.find('.username').text(response.username);
+                        }
+                        
+                        if (response.avatar_url) {
+                            const avatarImg = `${response.avatar_url}`;
+                            userProfileDiv.find('.avatar').css('background-image', `url(${avatarImg})`);
+                            avatarPreview.attr('src', avatarImg);
+                        }
+                        
+                        alert('Profile updated successfully!');
+                        modal.fadeOut(300);
+                    } else {
+                        alert(response.error || 'Failed to update profile.');
+                    }
+                },
+                error: function() {
+                    alert('An error occurred. Please try again.');
+                },
+                complete: function() {
+                    submitBtn.prop('disabled', false).text(originalText);
+                }
+            });
+        });
+    });
     </script>
   </body>
 </html>    

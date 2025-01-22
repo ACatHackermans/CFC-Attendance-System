@@ -8,7 +8,7 @@
   }
 
   if($_SERVER['REQUEST_METHOD'] == "POST") {
-    $username = htmlspecialchars($_POST['username'], ENT_QUOTES);
+    $username = trim(htmlspecialchars($_POST['username'], ENT_QUOTES));
     $password = htmlspecialchars($_POST['password'], ENT_QUOTES);
     
     //Read from database
