@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 22, 2025 at 05:09 PM
+-- Generation Time: Jan 22, 2025 at 05:35 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -82,7 +82,16 @@ CREATE TABLE `class_list` (
 --
 
 INSERT INTO `class_list` (`student_num`, `nfc_uid`, `surname`, `first_name`, `birthday`, `email`, `contact_num`, `guardian_name`, `guardian_num`, `date_of_enrollment`, `student_avatar`, `student_avatar_type`) VALUES
-('12354', '560FF703', 'Melgar', 'Felix Angelo', '2004-05-05', 'felixangelomelgar5@gmail.com', '9612133520', 'Prime', '9612133520', '2025-01-22 03:31:21', NULL, NULL);
+('CFC-2025-001', '560FF703', 'Sophia', 'the First', '2004-09-24', 'sophiatf@gmail.com', '9122025001', 'Firsty', '9122025001', '2025-01-22 09:34:33', NULL, NULL),
+('CFC-2025-002', 'C4C4E9F6', 'Alexandre', 'the Second', '2004-01-06', 'alexandrets@gmail.com', '9122025002', 'Secondy', '9122025002', '2025-01-22 09:34:23', NULL, NULL),
+('CFC-2025-003', '21D7F603', 'Alpha', 'the Third', '2004-08-05', 'alphatt@yahoo.com', '9122025003', 'Thirdy', '9122025003', '2025-01-22 09:34:10', NULL, NULL),
+('CFC-2025-004', '1311F903', 'Kelly', 'the Fourth', '2004-12-27', 'kellytf@gmail.com', '9122025004', 'Fourthy', '9122025004', '2025-01-22 09:33:48', NULL, NULL),
+('CFC-2025-005', '978FFA03', 'Princess', 'the Fifth', '2003-06-22', 'princesstf@yahoo.com', '9122025005', 'Fifthy', '9122025005', '2025-01-22 09:22:55', NULL, NULL),
+('CFC-2025-006', 'C7F2F703', 'Werner', 'the Sixth', '2004-04-30', 'wernerts@gmail.com', '9122025006', 'Sixthy', '9122025006', '2025-01-22 09:24:09', NULL, NULL),
+('CFC-2025-007', 'D4DBF803', 'James', 'the Seventh', '2005-05-11', 'jamests@yahoo.com', '9122025007', 'Seventhy', '9122025007', '2025-01-22 09:25:29', NULL, NULL),
+('CFC-2025-008', 'BBBBF803', 'Gideon', 'the Eighth', '2003-06-04', 'gideonte@gmail.com', '9122025008', 'Eighthy', '9122025008', '2025-01-22 09:26:37', NULL, NULL),
+('CFC-2025-009', '860EF703', 'Julian', 'the Ninth', '2004-09-20', 'juliantn@gmail.com', '9122025009', 'Ninthy', '9122025009', '2025-01-22 09:29:40', NULL, NULL),
+('CFC-2025-010', '72D6F803', 'Enrico', 'the Tenth', '2003-01-02', 'enricott@yahoo.com', '9122025010', 'Tenthy', '9122025010', '2025-01-22 09:31:28', NULL, NULL);
 
 -- --------------------------------------------------------
 
